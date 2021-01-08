@@ -4,11 +4,11 @@ LD = ld
 BUILD_DIR = build
 
 ${BUILD_DIR}/boot.bin: ${BUILD_DIR}/boot.o
-	${LD} --oformat=binary -Ttext=0x7C00 -nostartfiles -nostdlib $< -o $@
+	${LD} --oformat=binary -Ttext=0x7C00 -nostartfiles -nostdlib -e boot $< -o $@
 
 ${BUILD_DIR}/boot.o: boot/boot.s
 	mkdir -p ${dir $@}
-	${AS} -g --64 $< -o $@
+	${AS} $< -o $@
 
 clean:
 	rm -rf ${BUILD_DIR}
