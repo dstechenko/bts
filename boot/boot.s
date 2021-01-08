@@ -1,4 +1,4 @@
-.code64
+.code16
 
 .equ BOOT_SECTOR_SIZE, 512
 .equ BOOT_SIGNATURE_SIZE, 2
