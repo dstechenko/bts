@@ -7,8 +7,10 @@
 .equ INT_BIOS_VIDEO,      0x10
 .equ INT_BIOS_VIDEO_TTY,  0x0E
 
-.equ HEX_ASCII_OFFSET,    0x37
 .equ DEC_ASCII_OFFSET,    0x30
+.equ DEC_MAX_VALUE,       0x09
+
+.equ HEX_ASCII_OFFSET,    0x37
 .equ HEX_DIGIT_BIT_MASK,  0x000F
 .equ HEX_DIGIT_LENGTH,    0x4
 .equ HEX_DIGIT_SIZE,      0x4
@@ -25,7 +27,7 @@ boot:
   call  print_str
   mov   $debug_message, %si
   call  print_str
-  mov   $0xDEAD, %dx
+  mov   %sp, %dx
   call  print_hex
   call  wait
 
@@ -54,13 +56,23 @@ print_hex_loop:
   mov   %dx, %ax
   push  %cx
   dec   %cx
-  jz    print_hex_digit
+  jz    extract_hex_digit
   call  shift_digit
 
-print_hex_digit:
+extract_hex_digit:
   pop   %cx
   and   $HEX_DIGIT_BIT_MASK, %ax
+  cmp   $DEC_MAX_VALUE, %ax
+  jle   convert_dec_digit
+
+convert_hex_digit:
   add   $HEX_ASCII_OFFSET, %ax
+  jmp   print_hex_digit
+
+convert_dec_digit:
+  add   $DEC_ASCII_OFFSET, %ax
+
+print_hex_digit:
   mov   %al, (%si)
   inc   %si
   loop  print_hex_loop
@@ -77,7 +89,7 @@ print_hex_out:
   .asciz  "0x0000\r\n"
 
 debug_message:
-  .asciz  "Debug information: "
+  .asciz  "Debug information:\r\n"
 
 boot_message:
   .asciz  "Booting Dokkan...\r\n"
