@@ -1,3 +1,5 @@
+  .code16
+
   .equ BIOS_DISK,           0x13
   .equ BIOS_DISK_READ,      0x02
   .equ BIOS_DISK_CYLINDER,  0x00
