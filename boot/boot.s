@@ -7,6 +7,7 @@ boot_sector:
   .equ BOOT_STACK_LOCATION,   0x8000
   .equ BOOT_KERNEL_LOCATION,  0x9000
   .equ BOOT_KERNEL_SECTORS,   0x0003
+  .equ BOOT_DRIVE_INIT_VALUE, 0x00
 
   .text
 
@@ -44,19 +45,20 @@ boot_wait:
   jmp   .
 
 stack_debug_message:
-  .asciz  "\nDebug stack pointer:\r\n"
+  .asciz "\nDebug stack pointer:\r\n"
 
 load_debug_message:
-  .asciz  "\nDebug load data:\r\n"
+  .asciz "\nDebug load data:\r\n"
 
 boot_message:
-  .asciz  "\nBooting Dokkan...\r\n"
+  .asciz "\nBooting Dokkan...\r\n"
 
 boot_drive:
-  .byte   0x00
+  .byte   BOOT_DRIVE_INIT_VALUE
 
   .include "boot/print.s"
-  .include "boot/load.s"
+  .include "boot/disk.s"
+  .include "boot/gdt.s"
 
   .space  BOOT_SECTOR_SIZE - BOOT_SIGNATURE_SIZE - (. - boot_sector)
   .word   BOOT_SIGNATURE

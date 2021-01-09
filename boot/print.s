@@ -63,4 +63,4 @@ shift_digit:
   ret
 
 print_hex_out:
-  .asciz  "0x0000\r\n"
+  .asciz "0x0000\r\n"

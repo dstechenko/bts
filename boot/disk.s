@@ -50,10 +50,10 @@ disk_load_error:
   hlt
 
 disk_load_error_message:
-  .asciz  "\nDisk load error!\r\n\n"
+  .asciz "\nDisk load error!\r\n\n"
 
 disk_load_error_expected_message:
-  .asciz  "Expected sectors:\r\n"
+  .asciz "Expected sectors:\r\n"
 
 disk_load_error_read_message:
-  .asciz  "Read sectors:\r\n"
+  .asciz "Read sectors:\r\n"
