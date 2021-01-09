@@ -14,7 +14,7 @@ clean:
 	rm -rf ${BUILD_DIR}
 
 start: ${BUILD_DIR}/boot.bin
-	qemu-system-x86_64 -nographic -no-reboot -drive file=$<,index=0,media=disk,format=raw
+	qemu-system-i386 -nographic -no-reboot -drive file=$<,index=0,media=disk,format=raw
 
 
 .PHONY: clean start
