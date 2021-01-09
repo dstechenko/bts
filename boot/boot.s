@@ -2,8 +2,8 @@ boot_sector:
   .code16
 
   .equ BOOT_SECTOR_SIZE,      0x0200
-  .equ BOOT_SIGNATURE_SIZE,   0x0002
   .equ BOOT_SIGNATURE,        0xAA55
+  .equ BOOT_SIGNATURE_SIZE,   0x0002
   .equ BOOT_STACK_LOCATION,   0x8000
   .equ BOOT_KERNEL_LOCATION,  0x9000
   .equ BOOT_KERNEL_SECTORS,   0x0003
