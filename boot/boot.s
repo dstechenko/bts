@@ -1,98 +1,70 @@
-.code16
+boot_sector:
+  .code16
 
-.equ BOOT_SECTOR_SIZE,    0x200
-.equ BOOT_SIGNATURE_SIZE, 0x2
-.equ BOOT_SIGNATURE,      0xAA55
+  .equ BOOT_SECTOR_SIZE,      0x0200
+  .equ BOOT_SIGNATURE_SIZE,   0x0002
+  .equ BOOT_SIGNATURE,        0xAA55
+  .equ BOOT_STACK_LOCATION,   0x8000
+  .equ BOOT_KERNEL_LOCATION,  0x9000
+  .equ BOOT_KERNEL_SECTORS,   0x0003
 
-.equ INT_BIOS_VIDEO,      0x10
-.equ INT_BIOS_VIDEO_TTY,  0x0E
+  .text
 
-.equ DEC_ASCII_OFFSET,    0x30
-.equ DEC_MAX_VALUE,       0x09
+  .global boot_main
 
-.equ HEX_ASCII_OFFSET,    0x37
-.equ HEX_DIGIT_BIT_MASK,  0x000F
-.equ HEX_DIGIT_LENGTH,    0x4
-.equ HEX_DIGIT_SIZE,      0x4
-.equ HEX_SIGN_OFFSET,     0x2
+boot_main:
+  mov   %dl, (boot_drive)
 
-.equ NULL_SIGN,           0x0
+  mov   $BOOT_STACK_LOCATION, %bp
+  mov   %bp, %sp
 
-.text
-
-.global boot
-
-boot:
   mov   $boot_message, %si
-  call  print_str
-  mov   $debug_message, %si
-  call  print_str
+  call  print_string
+
+  mov   $stack_debug_message, %si
+  call  print_string
   mov   %sp, %dx
   call  print_hex
-  call  wait
 
-wait:
-  jmp .
+  mov   $BOOT_KERNEL_LOCATION, %bx
+  mov   $BOOT_KERNEL_SECTORS, %dh
+  mov   (boot_drive), %dl
+  call  disk_load
 
-print_str:
-  mov $INT_BIOS_VIDEO_TTY, %ah
+  mov   $load_debug_message, %si
+  call  print_string
+  mov   (BOOT_KERNEL_LOCATION), %dx
+  call  print_hex
+  mov   (BOOT_KERNEL_LOCATION + BOOT_SECTOR_SIZE), %dx
+  call  print_hex
 
-print_str_loop:
-  lodsb
-  cmp   $NULL_SIGN, %al
-  je    print_str_exit
-  int   $INT_BIOS_VIDEO
-  jmp   print_str_loop
+  call  boot_wait
 
-print_str_exit:
-  ret
+boot_wait:
+  jmp   .
 
-print_hex:
-  mov   $print_hex_out, %si
-  add   $HEX_SIGN_OFFSET, %si
-  mov   $HEX_DIGIT_LENGTH, %cx
+stack_debug_message:
+  .asciz  "\nDebug stack pointer:\r\n"
 
-print_hex_loop:
-  mov   %dx, %ax
-  push  %cx
-  dec   %cx
-  jz    extract_hex_digit
-  call  shift_digit
-
-extract_hex_digit:
-  pop   %cx
-  and   $HEX_DIGIT_BIT_MASK, %ax
-  cmp   $DEC_MAX_VALUE, %ax
-  jle   convert_dec_digit
-
-convert_hex_digit:
-  add   $HEX_ASCII_OFFSET, %ax
-  jmp   print_hex_digit
-
-convert_dec_digit:
-  add   $DEC_ASCII_OFFSET, %ax
-
-print_hex_digit:
-  mov   %al, (%si)
-  inc   %si
-  loop  print_hex_loop
-  mov   $print_hex_out, %si
-  call  print_str
-  ret
-
-shift_digit:
-  shr   $HEX_DIGIT_SIZE, %ax
-  loop  shift_digit
-  ret
-
-print_hex_out:
-  .asciz  "0x0000\r\n"
-
-debug_message:
-  .asciz  "Debug information:\r\n"
+load_debug_message:
+  .asciz  "\nDebug load data:\r\n"
 
 boot_message:
-  .asciz  "Booting Dokkan...\r\n"
+  .asciz  "\nBooting Dokkan...\r\n"
 
-  .space  BOOT_SECTOR_SIZE - BOOT_SIGNATURE_SIZE - (. - boot)
+boot_drive:
+  .byte   0x00
+
+  .include "boot/print.s"
+  .include "boot/load.s"
+
+  .space  BOOT_SECTOR_SIZE - BOOT_SIGNATURE_SIZE - (. - boot_sector)
   .word   BOOT_SIGNATURE
+
+  .word   0xDEAD
+  .space  BOOT_SECTOR_SIZE - BOOT_SIGNATURE_SIZE
+
+  .word   0xFACE
+  .space  BOOT_SECTOR_SIZE - BOOT_SIGNATURE_SIZE
+
+  .space  BOOT_SECTOR_SIZE
