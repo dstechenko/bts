@@ -47,7 +47,9 @@ disk_load_error:
   mov %ax, %dx
   call print_hex
 
+disk_load_hang:
   hlt
+  jmp disk_load_hang
 
 disk_load_error_message:
   .asciz "\nDisk load error!\r\n\n"

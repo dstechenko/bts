@@ -63,8 +63,9 @@ load_debug_message:
 
   .include "boot/gdt.s"
 
-boot_exit:
+boot_hang:
   hlt
+  jmp boot_hang
 
 boot_enter_protected:
   cli
@@ -78,7 +79,7 @@ boot_enter_protected:
 boot_protected:
   .code32
 
-  call boot_exit
+  call boot_hang
 
   .space BOOT_SECTOR_SIZE - (. - boot_protected)
   .space BOOT_SECTOR_SIZE
