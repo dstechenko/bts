@@ -5,8 +5,9 @@ build/boot.bin:
 
 build/kernel.bin:
 	mkdir -p build
+	as --32 -o build/kernel_entry.o kernel/kernel_entry.s
 	g++ -m32 -ffreestanding -fno-pie -o build/kernel.o -c kernel/kernel.cpp
-	ld -m elf_i386 --oformat=binary -Ttext=0x1000 -nostartfiles -nostdlib -e kernel_main -o build/kernel.bin build/kernel.o
+	ld -m elf_i386 --oformat=binary -Ttext=0x1000 -nostartfiles -nostdlib -e kernel_entry -o build/kernel.bin build/kernel_entry.o build/kernel.o
 
 build/os.img: build/boot.bin build/kernel.bin
 	cat build/boot.bin build/kernel.bin > build/os.img

@@ -88,6 +88,7 @@ boot_init_protected_mode:
   mov %ebp, %esp
 
 boot_with_protected_mode:
+  call BOOT_KERNEL_LOCATION
 
 boot_wait:
   hlt
