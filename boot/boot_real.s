@@ -9,7 +9,7 @@ boot_real_enter:
   mov $boot_real_drive_message, %si
   call print_bios_string
   xor %dx, %dx
-  movb (boot_drive), %dx
+  mov (boot_drive), %dl
   call print_bios_hex
 
   mov $boot_real_stack_message, %si
