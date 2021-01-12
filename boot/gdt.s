@@ -1,6 +1,4 @@
 gdt_sector:
-  .code16
-
   .equ GDT_SECTION_SIZE,            0x08
 
   .equ GDT_CODE_LIMIT_0_15,         0xFFFF

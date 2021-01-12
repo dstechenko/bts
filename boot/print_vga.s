@@ -5,8 +5,6 @@
   .equ STRING_END,                0x00
 
 print_vga_string:
-  .code32
-
   push %eax
   push %ebx
   push %edx
