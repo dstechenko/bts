@@ -14,7 +14,7 @@ clean:
 	rm -rf ${BUILD_DIR}
 
 start: ${BUILD_DIR}/boot.bin
-	qemu-system-i386 -nographic -no-reboot -drive file=$<,index=0,media=disk,format=raw
+	qemu-system-i386 -no-reboot -drive file=$<,index=0,media=disk,format=raw
 
 debug: ${BUILD_DIR}/boot.bin ${BUILD_DIR}/boot.o
 	objdump -D -m i386 -b binary -d ${BUILD_DIR}/boot.bin > ${BUILD_DIR}/boot_bin.txt

@@ -1,12 +1,15 @@
   .equ BIOS_VIDEO,          0x10
   .equ BIOS_VIDEO_TTY,      0x0E
+
   .equ DEC_ASCII_OFFSET,    0x30
   .equ DEC_MAX_VALUE,       0x09
+
   .equ HEX_ASCII_OFFSET,    0x37
   .equ HEX_DIGIT_BIT_MASK,  0x000F
   .equ HEX_DIGIT_LENGTH,    0x04
   .equ HEX_DIGIT_SIZE,      0x04
   .equ HEX_SIGN_OFFSET,     0x02
+
   .equ STRING_END,          0x00
 
 print_bios_string:
@@ -62,4 +65,4 @@ print_bios_shift_digit:
   ret
 
 print_bios_hex_out:
-  .asciz "0x0000\r\n"
+  .asciz "0x0000"

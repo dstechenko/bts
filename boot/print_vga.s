@@ -14,7 +14,7 @@ print_vga_string:
   mov $PRINT_VGA_VIDEO_MEMORY, %edx
 
 print_vga_string_loop:
-  movb (%ebx), %al
+  mov (%ebx), %al
   mov $PRINT_VGA_WHITE_ON_BLACK, %ah
 
   cmp $STRING_END, %al

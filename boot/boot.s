@@ -28,10 +28,16 @@ boot_main:
 
 boot_init:
 
-boot_save_drive:
+boot_init_drive:
   mov %dl, (boot_drive)
 
-boot_setup_stack:
+boot_init_segments:
+  xor %ax, %ax
+  mov %ax, %es
+  mov %ax, %ds
+  mov %ax, %ss
+
+boot_init_stack:
   mov $BOOT_STACK_LOCATION, %bp
   mov %bp, %sp
 
@@ -61,55 +67,52 @@ boot_load_kernel:
   mov (BOOT_KERNEL_LOCATION), %dx
   call print_bios_hex
 
-## boot_protected_mode:
-##   cli
+boot_protected_mode:
+  cli
 
-##   lgdt (gdt_descriptor)
+  lgdt (gdt_descriptor)
 
-##   mov %cr0, %eax
-##   or $BOOT_PROTECTED_ENABLE_GDT_FLAG, %eax
-##   mov %eax, %cr0
+  mov %cr0, %eax
+  or $BOOT_PROTECTED_ENABLE_GDT_FLAG, %eax
+  mov %eax, %cr0
 
-##   jmp $GDT_CODE_SEGMENT, $boot_init_protected_mode
+  jmp $GDT_CODE_SEGMENT, $boot_init_protected_mode
 
-## boot_init_protected_mode:
-##   .code32
+boot_init_protected_mode:
+  .code32
 
-##   mov $GDT_DATA_SEGMENT, %ax
+  mov $GDT_DATA_SEGMENT, %ax
 
-##   mov %ax, %ds
-##   mov %ax, %ss
-##   mov %ax, %es
-##   mov %ax, %fs
-##   mov %ax, %gs
+  mov %ax, %ds
+  mov %ax, %ss
+  mov %ax, %es
+  mov %ax, %fs
+  mov %ax, %gs
 
-##   mov $boot_protected_mode_message, %ebx
-##   call print_vga_string
+  mov $BOOT_PROTECTED_STACK_LOCATION, %ebp;
+  mov %ebp, %esp
 
-##   mov $boot_stack_message, %ebx
-##   call print_vga_string
-
-##   mov $BOOT_PROTECTED_STACK_LOCATION, %ebp;
-##   mov %ebp, %esp
+  mov $boot_protected_mode_message, %ebx
+  call print_vga_string
 
 boot_with_protected_mode:
   hlt
   jmp boot_with_protected_mode
 
 boot_real_mode_message:
-  .asciz "\nBooting in Real Mode...\r\n"
+  .asciz "Booting in Real Mode..."
 
 boot_protected_mode_message:
   .asciz "\nBooting in Protected Mode...\r\n"
 
 boot_drive_message:
-  .asciz "Boot drive:\r\n"
+  .asciz "\r\nBoot drive: "
 
 boot_stack_message:
-  .asciz "Stack pointer base:\r\n"
+  .asciz "\r\nStack pointer base: "
 
 boot_load_message:
-  .asciz "Disk load:\r\n"
+  .asciz "\r\nDisk load: "
 
 boot_drive:
   .byte BOOT_DRIVE_INIT_VALUE
