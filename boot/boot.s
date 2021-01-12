@@ -8,7 +8,7 @@ boot_sector:
   .equ BOOT_STACK_LOCATION,             0x9000
   .equ BOOT_DRIVE_INIT_VALUE,           0x00
 
-  .equ BOOT_KERNEL_LOCATION,            0xA000
+  .equ BOOT_KERNEL_LOCATION,            0x1000
   .equ BOOT_KERNEL_SECTORS,             0x0001
 
   .equ BOOT_PROTECTED_STACK_LOCATION,   0x00090000
@@ -23,7 +23,6 @@ boot_main:
 
   .include "boot/load_bios.s"
   .include "boot/print_bios.s"
-  .include "boot/print_vga.s"
   .include "boot/gdt.s"
 
 boot_init:
@@ -63,11 +62,6 @@ boot_load_kernel:
   mov (boot_drive), %dl
   call load_bios
 
-  mov $boot_load_message, %si
-  call print_bios_string
-  mov (BOOT_KERNEL_LOCATION), %dx
-  call print_bios_hex
-
 boot_protected_mode:
   cli
 
@@ -94,8 +88,10 @@ boot_init_protected_mode:
   mov %ebp, %esp
 
 boot_with_protected_mode:
+
+boot_wait:
   hlt
-  jmp boot_with_protected_mode
+  jmp boot_wait
 
 boot_real_mode_message:
   .asciz "Booting in Real Mode..."
@@ -106,14 +102,8 @@ boot_drive_message:
 boot_stack_message:
   .asciz "\r\nStack pointer base: "
 
-boot_load_message:
-  .asciz "\r\nDisk load: "
-
 boot_drive:
   .byte BOOT_DRIVE_INIT_VALUE
 
   .space BOOT_SECTOR_SIZE - BOOT_SIGNATURE_SIZE - (. - boot_sector)
   .word BOOT_SIGNATURE
-
-  .word 0xFACE
-  .space BOOT_SECTOR_SIZE - BOOT_SIGNATURE_SIZE
