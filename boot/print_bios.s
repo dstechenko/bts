@@ -1,3 +1,5 @@
+  .code16
+
   .equ BIOS_VIDEO,          0x10
   .equ BIOS_VIDEO_TTY,      0x0E
 

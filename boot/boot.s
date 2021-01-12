@@ -1,4 +1,6 @@
 boot_sector:
+  .code16
+
   .equ BOOT_SECTOR_SIZE,                0x0200
   .equ BOOT_SIGNATURE,                  0xAA55
   .equ BOOT_SIGNATURE_SIZE,             0x0002
@@ -17,8 +19,6 @@ boot_sector:
   .global boot_main
 
 boot_main:
-  .code16
-
   jmp boot_init
 
   .include "boot/load_bios.s"
@@ -27,6 +27,7 @@ boot_main:
   .include "boot/gdt.s"
 
 boot_init:
+  .code16
 
 boot_init_drive:
   mov %dl, (boot_drive)
@@ -92,18 +93,12 @@ boot_init_protected_mode:
   mov $BOOT_PROTECTED_STACK_LOCATION, %ebp;
   mov %ebp, %esp
 
-  mov $boot_protected_mode_message, %ebx
-  call print_vga_string
-
 boot_with_protected_mode:
   hlt
   jmp boot_with_protected_mode
 
 boot_real_mode_message:
   .asciz "Booting in Real Mode..."
-
-boot_protected_mode_message:
-  .asciz "\nBooting in Protected Mode...\r\n"
 
 boot_drive_message:
   .asciz "\r\nBoot drive: "

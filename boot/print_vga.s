@@ -1,3 +1,5 @@
+  .code32
+
   .equ PRINT_VGA_VIDEO_MEMORY,    0x000B8000
   .equ PRINT_VGA_WHITE_ON_BLACK,  0x0F
   .equ PRINT_VGA_INPUT_STEP,      0x01

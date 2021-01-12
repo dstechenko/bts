@@ -1,3 +1,5 @@
+  .code16
+
   .equ LOAD_BIOS_INT,       0x13
   .equ LOAD_BIOS_READ,      0x02
   .equ LOAD_BIOS_CYLINDER,  0x00
