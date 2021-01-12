@@ -42,5 +42,5 @@ gdt_descriptor:
   .word gdt_exit - gdt_sector -1
   .long gdt_sector
 
-  .equ CODE_SEGMENT, gdt_code - gdt_sector
-  .equ DATA_SEGMENT, gdt_data - gdt_sector
+  .equ GDT_CODE_SEGMENT, gdt_code - gdt_sector
+  .equ GDT_DATA_SEGMENT, gdt_data - gdt_sector
