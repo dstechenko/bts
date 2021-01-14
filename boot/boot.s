@@ -21,7 +21,7 @@ boot_sector:
 boot_main:
   jmp boot_init
 
-  .include "boot/load_bios.s"
+  .include "boot/load.s"
   .include "boot/print_bios.s"
   .include "boot/gdt.s"
 
