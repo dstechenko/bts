@@ -41,21 +41,6 @@ boot_init_stack:
   mov $BOOT_STACK_LOCATION, %bp
   mov %bp, %sp
 
-boot_print_debug:
-  mov $boot_real_mode_message, %si
-  call print_bios_string
-
-  mov $boot_drive_message, %si
-  call print_bios_string
-  xor %dx, %dx
-  mov (boot_drive), %dl
-  call print_bios_hex
-
-  mov $boot_stack_message, %si
-  call print_bios_string
-  mov $BOOT_STACK_LOCATION, %dx
-  call print_bios_hex
-
 boot_load_kernel:
   mov $BOOT_KERNEL_LOCATION, %bx
   mov $BOOT_KERNEL_SECTORS, %dh
@@ -87,21 +72,12 @@ boot_init_protected_mode:
   mov $BOOT_PROTECTED_STACK_LOCATION, %ebp;
   mov %ebp, %esp
 
-boot_with_protected_mode:
+boot_kernel:
   call BOOT_KERNEL_LOCATION
 
 boot_wait:
   hlt
   jmp boot_wait
-
-boot_real_mode_message:
-  .asciz "Booting in Real Mode..."
-
-boot_drive_message:
-  .asciz "\r\nBoot drive: "
-
-boot_stack_message:
-  .asciz "\r\nStack pointer base: "
 
 boot_drive:
   .byte BOOT_DRIVE_INIT_VALUE
