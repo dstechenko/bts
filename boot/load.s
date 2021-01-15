@@ -29,33 +29,36 @@ load_bios_error:
   push %dx
 
   mov $load_bios_error_message, %si
-  call print_bios_string
+  call print_string
+  call print_newline
 
   mov $load_bios_error_expected_message, %si
-  call print_bios_string
+  call print_string
 
   pop %dx
   mov %dh, %dl
   xor %dh, %dh
-  call print_bios_hex
+  call print_hex
+  call print_newline
 
   mov $load_bios_error_read_message, %si
-  call print_bios_string
+  call print_string
 
   pop %ax
   xor %ah, %ah
   mov %ax, %dx
-  call print_bios_hex
+  call print_hex
+  call print_newline
 
 load_bios_hang:
   hlt
   jmp load_bios_hang
 
 load_bios_error_message:
-  .asciz "\nDisk load error!\r\n\n"
+  .asciz "Disk load error..."
 
 load_bios_error_expected_message:
-  .asciz "Expected sectors:\r\n"
+  .asciz "Expected sectors: "
 
 load_bios_error_read_message:
-  .asciz "Read sectors:\r\n"
+  .asciz "Read sectors: "

@@ -14,57 +14,65 @@
 
   .equ STRING_END,          0x00
 
-print_bios_string:
+print_string:
   xor %ax, %ax
   mov $BIOS_VIDEO_TTY, %ah
 
-print_bios_string_loop:
+print_string_loop:
   lodsb
   cmp $STRING_END, %al
-  je print_bios_string_exit
+  je print_string_exit
   int $BIOS_VIDEO
-  jmp print_bios_string_loop
+  jmp print_string_loop
 
-print_bios_string_exit:
+print_string_exit:
   ret
 
-print_bios_hex:
-  mov $print_bios_hex_out, %si
+print_hex:
+  mov $print_hex_out, %si
   add $HEX_SIGN_OFFSET, %si
   mov $HEX_DIGIT_LENGTH, %cx
 
-print_bios_hex_loop:
+print_hex_loop:
   mov %dx, %ax
   push %cx
   dec %cx
-  jz print_bios_extract_hex_digit
-  call print_bios_shift_digit
+  jz print_extract_hex_digit
+  call print_shift_digit
 
-print_bios_extract_hex_digit:
+print_extract_hex_digit:
   pop %cx
   and $HEX_DIGIT_BIT_MASK, %ax
   cmp $DEC_MAX_VALUE, %ax
-  jle print_bios_convert_dec_digit
+  jle print_convert_dec_digit
 
-print_bios_convert_hex_digit:
+print_convert_hex_digit:
   add $HEX_ASCII_OFFSET, %ax
-  jmp print_bios_hex_digit
+  jmp print_hex_digit
 
-print_bios_convert_dec_digit:
+print_convert_dec_digit:
   add $DEC_ASCII_OFFSET, %ax
 
-print_bios_hex_digit:
+print_hex_digit:
   mov %al, (%si)
   inc %si
-  loop print_bios_hex_loop
-  mov $print_bios_hex_out, %si
-  call print_bios_string
+  loop print_hex_loop
+  mov $print_hex_out, %si
+  call print_string
   ret
 
-print_bios_shift_digit:
+print_shift_digit:
   shr $HEX_DIGIT_SIZE, %ax
-  loop print_bios_shift_digit
+  loop print_shift_digit
   ret
 
-print_bios_hex_out:
+print_newline:
+  mov $print_newline_out, %si
+  call print_string
+  ret
+
+print_hex_out:
   .asciz "0x0000"
+
+print_newline_out:
+  .asciz "\r\n"

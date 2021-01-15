@@ -21,10 +21,10 @@ debug_memory_loop_line:
 
   mov %dx, %bx
   mov (%bx), %dx
-  call print_bios_hex
+  call print_hex
 
   mov $debug_memory_delimeter, %si
-  call print_bios_string
+  call print_string
 
   pop %cx
   pop %dx
@@ -35,7 +35,7 @@ debug_memory_loop_line:
   loop debug_memory_loop_line
 
   mov $debug_memory_newline, %si
-  call print_bios_string
+  call print_string
 
   pop %dx
   pop %bx

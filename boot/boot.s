@@ -1,6 +1,7 @@
 boot_sector:
   .code16
 
+  .equ BOOT_SECTOR_OFFSET,              0x7C00
   .equ BOOT_SECTOR_SIZE,                0x0200
   .equ BOOT_SIGNATURE,                  0xAA55
   .equ BOOT_SIGNATURE_SIZE,             0x0002
@@ -8,7 +9,7 @@ boot_sector:
   .equ BOOT_STACK_LOCATION,             0x9000
   .equ BOOT_DRIVE_INIT_VALUE,           0x00
 
-  .equ BOOT_KERNEL_LOCATION,            BOOT_SECTOR_SIZE + 1
+  .equ BOOT_KERNEL_LOCATION,            BOOT_SECTOR_OFFSET + BOOT_SECTOR_SIZE
   .equ BOOT_KERNEL_SECTORS,             0x0001
 
   .equ BOOT_PROTECTED_STACK_LOCATION,   0x00090000
@@ -23,7 +24,7 @@ boot_main:
 
   .include "boot/debug.s"
   .include "boot/load.s"
-  .include "boot/print_bios.s"
+  .include "boot/print.s"
   .include "boot/gdt.s"
 
 boot_init:
