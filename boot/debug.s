@@ -4,6 +4,9 @@
   .equ DEBUG_MEMORY_LINE_LENGTH,  0x0008
 
 debug_memory:
+  push %bp
+  mov %sp, %bp
+
   push %bx
   push %dx
 
@@ -48,8 +51,7 @@ debug_memory_loop_line:
   jmp debug_memory_loop
 
 debug_memory_exit:
-  pop %dx
-  pop %bx
+  leave
   ret
 
 debug_memory_delimeter:
