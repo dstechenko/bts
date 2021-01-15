@@ -8,7 +8,7 @@ boot_sector:
   .equ BOOT_STACK_LOCATION,             0x9000
   .equ BOOT_DRIVE_INIT_VALUE,           0x00
 
-  .equ BOOT_KERNEL_LOCATION,            0x1000
+  .equ BOOT_KERNEL_LOCATION,            BOOT_SECTOR_SIZE + 1
   .equ BOOT_KERNEL_SECTORS,             0x0001
 
   .equ BOOT_PROTECTED_STACK_LOCATION,   0x00090000
@@ -21,6 +21,7 @@ boot_sector:
 boot_main:
   jmp boot_init
 
+  .include "boot/debug.s"
   .include "boot/load.s"
   .include "boot/print_bios.s"
   .include "boot/gdt.s"
