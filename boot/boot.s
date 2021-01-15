@@ -9,7 +9,6 @@ boot_sector:
   .equ BOOT_STACK_LOCATION,             0x9000
   .equ BOOT_DRIVE_INIT_VALUE,           0x00
 
-  .equ BOOT_KERNEL_LOCATION,            BOOT_SECTOR_OFFSET + BOOT_SECTOR_SIZE
   .equ BOOT_KERNEL_SECTORS,             0x0001
 
   .equ BOOT_PROTECTED_STACK_LOCATION,   0x00090000
@@ -22,7 +21,6 @@ boot_sector:
 boot_main:
   jmp boot_init
 
-  .include "boot/debug.s"
   .include "boot/load.s"
   .include "boot/print.s"
   .include "boot/gdt.s"
@@ -44,7 +42,7 @@ boot_init_stack:
   mov %bp, %sp
 
 boot_load_kernel:
-  mov $BOOT_KERNEL_LOCATION, %bx
+  mov $boot_kernel_sector, %bx
   mov $BOOT_KERNEL_SECTORS, %dh
   mov (boot_drive), %dl
   call load_bios
@@ -75,7 +73,7 @@ boot_init_protected_mode:
   mov %ebp, %esp
 
 boot_kernel:
-  call BOOT_KERNEL_LOCATION
+  call boot_kernel_sector
 
 boot_wait:
   hlt
@@ -86,3 +84,5 @@ boot_drive:
 
   .space BOOT_SECTOR_SIZE - BOOT_SIGNATURE_SIZE - (. - boot_sector)
   .word BOOT_SIGNATURE
+
+boot_kernel_sector:
