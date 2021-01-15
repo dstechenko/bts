@@ -1,38 +1,38 @@
   .code16
 
-  .equ LOAD_BIOS_INT,       0x13
-  .equ LOAD_BIOS_READ,      0x02
-  .equ LOAD_BIOS_CYLINDER,  0x00
-  .equ LOAD_BIOS_HEAD,      0x00
-  .equ LOAD_BIOS_SECTOR,    0x02
+  .equ LOAD_DISK_INT,       0x13
+  .equ LOAD_DISK_READ,      0x02
+  .equ LOAD_DISK_CYLINDER,  0x00
+  .equ LOAD_DISK_HEAD,      0x00
+  .equ LOAD_DISK_SECTOR,    0x02
 
-load_bios:
+load_disk:
   push %dx
 
-  mov $LOAD_BIOS_READ, %ah
+  mov $LOAD_DISK_READ, %ah
   mov %dh, %al
-  mov $LOAD_BIOS_CYLINDER, %ch
-  mov $LOAD_BIOS_HEAD, %dh
-  mov $LOAD_BIOS_SECTOR, %cl
+  mov $LOAD_DISK_CYLINDER, %ch
+  mov $LOAD_DISK_HEAD, %dh
+  mov $LOAD_DISK_SECTOR, %cl
 
-  int $LOAD_BIOS_INT
+  int $LOAD_DISK_INT
   pop %dx
-  jc load_bios_error
+  jc load_disk_error
 
   cmp %dh, %al
-  jne load_bios_error
+  jne load_disk_error
 
   ret
 
-load_bios_error:
+load_disk_error:
   push %ax
   push %dx
 
-  mov $load_bios_error_message, %si
+  mov $load_disk_error_message, %si
   call print_string
   call print_newline
 
-  mov $load_bios_error_expected_message, %si
+  mov $load_disk_error_expected_message, %si
   call print_string
 
   pop %dx
@@ -41,7 +41,7 @@ load_bios_error:
   call print_hex
   call print_newline
 
-  mov $load_bios_error_read_message, %si
+  mov $load_disk_error_read_message, %si
   call print_string
 
   pop %ax
@@ -50,15 +50,15 @@ load_bios_error:
   call print_hex
   call print_newline
 
-load_bios_hang:
+load_disk_wait:
   hlt
-  jmp load_bios_hang
+  jmp load_disk_wait
 
-load_bios_error_message:
+load_disk_error_message:
   .asciz "Disk load error..."
 
-load_bios_error_expected_message:
+load_disk_error_expected_message:
   .asciz "Expected sectors: "
 
-load_bios_error_read_message:
+load_disk_error_read_message:
   .asciz "Read sectors: "

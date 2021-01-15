@@ -45,7 +45,7 @@ boot_load_kernel:
   mov $boot_kernel_sector, %bx
   mov $BOOT_KERNEL_SECTORS, %dh
   mov (boot_drive), %dl
-  call load_bios
+  call load_disk
 
 boot_protected_mode:
   cli
