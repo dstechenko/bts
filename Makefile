@@ -22,4 +22,7 @@ debug: build/boot.bin
 	objdump -D -m i386 -b binary -d build/boot.bin > build/boot_bin.txt
 	objdump -D -m i386 -d           build/boot.o   > build/boot_o.txt
 
-.PHONY: clean run debug
+format:
+	find . -name *.cpp -or -name *.hpp | xargs clang-format -i
+
+.PHONY: clean run debug format
