@@ -5,7 +5,7 @@
 
 namespace dokkan::drivers {
 
-enum class Color : byte_t {
+enum class Color : uint8_t {
   BLACK,
   BLUE,
   GREEN,
@@ -27,8 +27,8 @@ enum class Color : byte_t {
 class Colors {
  public:
   explicit Colors() = delete;
-  static byte_t make(Color foreground, Color background);
-  static byte_t makeDefault();
+  static uint8_t make(Color foreground, Color background);
+  static uint8_t makeDefault();
 };
 
 }  // namespace dokkan::drivers

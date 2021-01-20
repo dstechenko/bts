@@ -21,13 +21,13 @@ namespace dokkan::drivers {
 namespace {
 
 struct VideoTextData {
-  byte_t text;
-  byte_t data;
+  uint8_t text;
+  uint8_t data;
   static VideoTextData* get(int offset = 0) {
     return reinterpret_cast<VideoTextData*>(VGA_VIDEO_ADDRESS) + offset;
   }
-  static byte_t* getBytes(int offset = 0) {
-    return reinterpret_cast<byte_t*>(get(offset));
+  static uint8_t* getBytes(int offset = 0) {
+    return reinterpret_cast<uint8_t*>(get(offset));
   }
 };
 
@@ -65,12 +65,12 @@ int getCursorOffset() {
 
 void setCursorOffset(int offset) {
   Ports::writeByte(REG_SCREEN_CTRL, REG_SCREEN_CURSOR_HB);
-  Ports::writeByte(REG_SCREEN_DATA, static_cast<byte_t>(offset >> 8));
+  Ports::writeByte(REG_SCREEN_DATA, static_cast<uint8_t>(offset >> 8));
   Ports::writeByte(REG_SCREEN_CTRL, REG_SCREEN_CURSOR_LB);
-  Ports::writeByte(REG_SCREEN_DATA, static_cast<byte_t>(offset));
+  Ports::writeByte(REG_SCREEN_DATA, static_cast<uint8_t>(offset));
 }
 
-void printCharacter(char text, int col, int row, byte_t data) {
+void printCharacter(char text, int col, int row, uint8_t data) {
   auto* video = VideoTextData::get();
 
   int offset;
@@ -83,7 +83,7 @@ void printCharacter(char text, int col, int row, byte_t data) {
   if (text == '\n') {
     offset = getScreenOffset(VGA_MAX_COLS - 1, getScreenRow(offset));
   } else {
-    video[offset] = {.text = static_cast<byte_t>(text), .data = data};
+    video[offset] = {.text = static_cast<uint8_t>(text), .data = data};
   }
 
   offset++;

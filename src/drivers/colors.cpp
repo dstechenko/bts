@@ -3,13 +3,13 @@
 namespace dokkan::drivers {
 
 /* static */
-byte_t Colors::make(Color foreground, Color background) {
-  return (static_cast<byte_t>(background) << 4) +
-         static_cast<byte_t>(foreground);
+uint8_t Colors::make(Color foreground, Color background) {
+  return (static_cast<uint8_t>(background) << 4) +
+         static_cast<uint8_t>(foreground);
 }
 
 /* static */
-byte_t Colors::makeDefault() {
+uint8_t Colors::makeDefault() {
   return make(/* foreground = */ Color::GREEN,
               /* background = */ Color::BLACK);
 }

@@ -8,10 +8,10 @@ namespace dokkan::kernel {
 class Ports {
  public:
   explicit Ports() = delete;
-  static byte_t readByte(word_t port);
-  static void writeByte(word_t port, byte_t data);
-  static word_t readWord(word_t port);
-  static void writeWord(word_t port, word_t data);
+  static uint8_t readByte(uint16_t port);
+  static void writeByte(uint16_t port, uint8_t data);
+  static uint16_t readWord(uint16_t port);
+  static void writeWord(uint16_t port, uint16_t data);
 };
 
 }  // namespace dokkan::kernel

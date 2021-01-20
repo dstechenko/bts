@@ -8,7 +8,7 @@ namespace dokkan::kernel {
 class Utils {
  public:
   explicit Utils() = delete;
-  static void copyMemory(byte_t* src, byte_t* dst, int num);
+  static void copyMemory(uint8_t* src, uint8_t* dst, int num);
   static void convertIntToAscii(int in, string_t out);
 };
 
