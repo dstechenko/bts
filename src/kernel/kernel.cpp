@@ -1,9 +1,15 @@
 #include <drivers/screen.hpp>
 
-extern "C" void kernel_main();
+using dokkan::drivers::Screen;
 
-void kernel_main() {
+namespace dokkan::kernel {
+
+void kernel_init() {
   char *video_memory = (char *)0x000B8000;
   *video_memory = 'X';
-  dokkan::drivers::Screen::print("");
+  Screen::print("");
 }
+
+} // namespace dokkan::kernel
+
+extern "C" void kernel_main() { dokkan::kernel::kernel_init(); }

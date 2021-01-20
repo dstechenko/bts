@@ -60,7 +60,7 @@ void set_cursor_offset() {}
 
 void clear_screen() {}
 
-}
+} // namespace
 
 /* static */
 void Screen::print(string_t data) {}
