@@ -1,32 +1,32 @@
 #include <drivers/screen.hpp>
 
-// #define VGA_VIDEO_ADDRESS 0x000B8000
+#define VGA_VIDEO_ADDRESS 0x000B8000
 
-// #define VGA_DATA_SIZE 2
+#define VGA_DATA_SIZE 2
 
-// #define VGA_MAX_ROWS 25
-// #define VGA_MAX_COLS 80
+#define VGA_MAX_ROWS 25
+#define VGA_MAX_COLS 80
 
-// #define DEFAULT_COLORS 0x0F
+#define DEFAULT_COLORS 0x0F
 
-// #define REG_SCREEN_CTRL 0x03D4
-// #define REG_SCREEN_DATA 0x03D5
+#define REG_SCREEN_CTRL 0x03D4
+#define REG_SCREEN_DATA 0x03D5
 
 namespace dokkan::drivers {
 
-// namespace {
+namespace {
 
-// int get_offset(int col, int row) {
-//   return VGA_DATA_SIZE * (VGA_MAX_COLS * row + col);
-// }
+int get_offset(int col, int row) {
+  return VGA_DATA_SIZE * (VGA_MAX_COLS * row + col);
+}
 
-// int get_offset_row(int offset) {
-//   return offset / (VGA_DATA_SIZE * VGA_MAX_COLS);
-// }
+int get_offset_row(int offset) {
+  return offset / (VGA_DATA_SIZE * VGA_MAX_COLS);
+}
 
-// int get_offset_col(int offset) {
-//   return (offset / VGA_DATA_SIZE) - (get_offset_row(offset) * VGA_MAX_COLS);
-// }
+int get_offset_col(int offset) {
+  return (offset / VGA_DATA_SIZE) - (get_offset_row(offset) * VGA_MAX_COLS);
+}
 
 // void print_char(byte_t character, int col, int row, byte_t attribute) {
 //   auto *memory = static_cast<byte_t *>(VGA_VIDEO_ADDRESS);
@@ -54,16 +54,18 @@ namespace dokkan::drivers {
 //   set_cursor(offset);
 // }
 
-// int get_cursor_offset() { return 0; }
+int get_cursor_offset() { return 0; }
 
-// void set_cursor_offset() {}
+void set_cursor_offset() {}
 
-// void clear_screen() {}
+void clear_screen() {}
 
-// }
+}
 
-void print() {}
+/* static */
+void Screen::print(string_t data) {}
 
-// void print(string_t data, int col, int row) {}
+/* static */
+void Screen::print(string_t data, int col, int row) {}
 
 } // namespace dokkan::drivers
