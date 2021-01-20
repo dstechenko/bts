@@ -30,9 +30,9 @@ $(BOOT_TARGET): $(BUILD_DIR)/boot/boot.o
 	mkdir -p $(@D)
 	$(LD) $(LDFLAGS) -Ttext=0x7C00 -e boot_entry $< -o $@
 
-$(KERNEL_TARGET): $(BUILD_DIR)/kernel/kernel_entry.o $(BUILD_DIR)/kernel/kernel.o $(OBJS)
+$(KERNEL_TARGET): $(BUILD_DIR)/boot/kernel_entry.o $(BUILD_DIR)/kernel/kernel.o $(OBJS)
 	mkdir -p $(@D)
-	$(LD) $(LDFLAGS) -Ttext=0x1000 -e kernel_entry $^ -o $@
+	$(LD) $(LDFLAGS) -Ttext=0x7E00 -e kernel_entry $^ -o $@
 
 $(BUILD_DIR)/%.o: $(SRC_DIR)/%.s
 	mkdir -p $(@D)
@@ -55,6 +55,6 @@ disas: $(BOOT_TARGET) $(KERNEL_TARGET) $(OS_TARGET)
 	$(OD) $(ODFLAGS) -b binary $(OS_TARGET) > $(OS_TARGET).disas
 
 format:
-	find . -name *.cpp -or -name *.hpp | xargs clang-format -i
+	find . -name *.cpp -or -name *.hpp | xargs clang-format -i --style=Google
 
 .PHONY: clean run disas format

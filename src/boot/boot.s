@@ -9,7 +9,7 @@ boot_sector:
   .equ BOOT_STACK_LOCATION,             0x9000
   .equ BOOT_DRIVE_INIT_VALUE,           0x00
 
-  .equ BOOT_KERNEL_SECTORS,             0x0001
+  .equ BOOT_KERNEL_SECTORS,             0x0006
 
   .equ BOOT_PROTECTED_STACK_LOCATION,   0x00090000
   .equ BOOT_PROTECTED_ENABLE_GDT_FLAG,  0x00000001

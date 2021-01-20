@@ -5,8 +5,8 @@ namespace dokkan {
 
 using byte_t = unsigned char;
 using word_t = unsigned short;
-using string_t = const char *;
+using string_t = const char*;
 
-} // namespace dokkan
+}  // namespace dokkan
 
 #endif

@@ -1,71 +1,130 @@
+#include <drivers/colors.hpp>
 #include <drivers/screen.hpp>
+#include <kernel/ports.hpp>
+#include <kernel/utils.hpp>
 
 #define VGA_VIDEO_ADDRESS 0x000B8000
-
-#define VGA_DATA_SIZE 2
 
 #define VGA_MAX_ROWS 25
 #define VGA_MAX_COLS 80
 
-#define DEFAULT_COLORS 0x0F
-
 #define REG_SCREEN_CTRL 0x03D4
 #define REG_SCREEN_DATA 0x03D5
+#define REG_SCREEN_CURSOR_HB 0x0E
+#define REG_SCREEN_CURSOR_LB 0x0F
+
+using dokkan::kernel::Ports;
+using dokkan::kernel::Utils;
 
 namespace dokkan::drivers {
 
 namespace {
 
-int get_offset(int col, int row) {
-  return VGA_DATA_SIZE * (VGA_MAX_COLS * row + col);
+struct VideoTextData {
+  byte_t text;
+  byte_t data;
+  static VideoTextData* get(int offset = 0) {
+    return reinterpret_cast<VideoTextData*>(VGA_VIDEO_ADDRESS) + offset;
+  }
+  static byte_t* getBytes(int offset = 0) {
+    return reinterpret_cast<byte_t*>(get(offset));
+  }
+};
+
+int getScreenOffset(int col, int row) { return VGA_MAX_COLS * row + col; }
+
+int getScreenRow(int offset) { return offset / VGA_MAX_COLS; }
+
+int handleScrolling(int offset) {
+  if (offset >= VGA_MAX_COLS * VGA_MAX_ROWS) {
+    for (int row = 1; row < VGA_MAX_ROWS; row++) {
+      Utils::copyMemory(
+          VideoTextData::getBytes(getScreenOffset(/* col = */ 0, row)),
+          VideoTextData::getBytes(getScreenOffset(/* col = */ 0, row - 1)),
+          sizeof(VideoTextData) * VGA_MAX_COLS);
+    }
+
+    const auto lastLine = getScreenOffset(/* col = */ 0, VGA_MAX_ROWS - 1);
+    auto* video = VideoTextData::get(lastLine);
+    for (int col = 0; col < VGA_MAX_COLS; col++) {
+      video[col].text = 0;
+    }
+
+    offset -= VGA_MAX_COLS;
+  }
+  return offset;
 }
 
-int get_offset_row(int offset) {
-  return offset / (VGA_DATA_SIZE * VGA_MAX_COLS);
+int getCursorOffset() {
+  Ports::writeByte(REG_SCREEN_CTRL, REG_SCREEN_CURSOR_HB);
+  int offset = Ports::readByte(REG_SCREEN_DATA) << 8;
+  Ports::writeByte(REG_SCREEN_CTRL, REG_SCREEN_CURSOR_LB);
+  offset += Ports::readByte(REG_SCREEN_DATA);
+  return offset;
 }
 
-int get_offset_col(int offset) {
-  return (offset / VGA_DATA_SIZE) - (get_offset_row(offset) * VGA_MAX_COLS);
+void setCursorOffset(int offset) {
+  Ports::writeByte(REG_SCREEN_CTRL, REG_SCREEN_CURSOR_HB);
+  Ports::writeByte(REG_SCREEN_DATA, static_cast<byte_t>(offset >> 8));
+  Ports::writeByte(REG_SCREEN_CTRL, REG_SCREEN_CURSOR_LB);
+  Ports::writeByte(REG_SCREEN_DATA, static_cast<byte_t>(offset));
 }
 
-// void print_char(byte_t character, int col, int row, byte_t attribute) {
-//   auto *memory = static_cast<byte_t *>(VGA_VIDEO_ADDRESS);
+void printCharacter(char text, int col, int row, byte_t data) {
+  auto* video = VideoTextData::get();
 
-//   if (attribute == 0) {
-//     attribute = DEFAULT_COLORS;
-//   }
+  int offset;
+  if (col >= 0 && row >= 0) {
+    offset = getScreenOffset(col, row);
+  } else {
+    offset = getCursorOffset();
+  }
 
-//   int offset;
-//   if (col >= 0 && row >= 0) {
-//     offset = get_screen_offset(col, row);
-//   } else {
-//     offset = get_cursor();
-//   }
+  if (text == '\n') {
+    offset = getScreenOffset(VGA_MAX_COLS - 1, getScreenRow(offset));
+  } else {
+    video[offset] = {.text = static_cast<byte_t>(text), .data = data};
+  }
 
-//   if (character == '\n') {
-//     offset = get_screen_offset(VGA_MAX_COLS - 1, get_offset_row(offset));
-//   } else {
-//     memory[offset] = character;
-//     memory[offset + 1] = attribute;
-//   }
+  offset++;
+  offset = handleScrolling(offset);
+  setCursorOffset(offset);
+}
 
-//   offset += 2;
-//   offset = handle_scrolling(offset);
-//   set_cursor(offset);
-// }
-
-int get_cursor_offset() { return 0; }
-
-void set_cursor_offset() {}
-
-void clear_screen() {}
-
-} // namespace
+}  // namespace
 
 /* static */
-void Screen::print(string_t data) {}
+void Screen::print(string_t data) {
+  printAt(data, /* col = */ -1, /* row = */ -1);
+}
 
 /* static */
-void Screen::print(string_t data, int col, int row) {}
+void Screen::printAt(string_t data, int col, int row) {
+  if (col >= 0 && row >= 0) {
+    setCursorOffset(getScreenOffset(col, row));
+  }
+  for (int it = 0; data[it] != 0; it++) {
+    printCharacter(data[it], col, row, Colors::makeDefault());
+  }
+}
 
-} // namespace dokkan::drivers
+/* static */
+void Screen::printLine(string_t data) {
+  print(data);
+  printLine();
+}
+
+/* static */
+void Screen::printLine() { print("\n"); }
+
+/* static */
+void Screen::clear() {
+  for (int row = 0; row < VGA_MAX_ROWS; row++) {
+    for (int col = 0; col < VGA_MAX_COLS; col++) {
+      printCharacter(/* data = */ ' ', col, row, Colors::makeDefault());
+    }
+  }
+  setCursorOffset(getScreenOffset(/* col = */ 0, /* row = */ 0));
+}
+
+}  // namespace dokkan::drivers

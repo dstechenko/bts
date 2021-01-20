@@ -6,14 +6,14 @@
 namespace dokkan::kernel {
 
 class Ports {
-public:
+ public:
   explicit Ports() = delete;
-  byte_t readByte(word_t port);
-  void writeByte(word_t port, byte_t data);
-  word_t readWord(word_t port);
-  void writeWord(word_t port, word_t data);
+  static byte_t readByte(word_t port);
+  static void writeByte(word_t port, byte_t data);
+  static word_t readWord(word_t port);
+  static void writeWord(word_t port, word_t data);
 };
 
-} // namespace dokkan::kernel
+}  // namespace dokkan::kernel
 
 #endif
