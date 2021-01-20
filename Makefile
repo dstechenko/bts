@@ -57,4 +57,4 @@ disas: $(BOOT_TARGET) $(KERNEL_TARGET) $(OS_TARGET)
 format:
 	find . -name *.cpp -or -name *.hpp | xargs clang-format -i
 
-.PHONY: clean run debug format
+.PHONY: clean run disas format
