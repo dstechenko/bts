@@ -16,14 +16,16 @@ boot_sector:
 
   .text
 
-  .global boot_main
+  .global boot_entry
+
+boot_entry:
 
 boot_main:
   jmp boot_init
 
-  .include "boot/load.s"
-  .include "boot/print.s"
-  .include "boot/gdt.s"
+  .include "load.s"
+  .include "print.s"
+  .include "gdt.s"
 
 boot_init:
   .code16

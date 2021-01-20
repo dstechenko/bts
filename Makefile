@@ -1,26 +1,58 @@
-build/boot.bin:
-	mkdir -p build
-	as --32 -o build/boot.o boot/boot.s
-	ld -m elf_i386 --oformat=binary -Ttext=0x7C00 -nostartfiles -nostdlib -e boot_main -o build/boot.bin build/boot.o
+BUILD_DIR := build
+SRC_DIR		:= src
+BIN_DIR		:= bin
 
-build/kernel.bin:
-	mkdir -p build
-	as --32 -o build/kernel_entry.o kernel/kernel_entry.s
-	g++ -m32 -ffreestanding -fno-pie -o build/kernel.o -c kernel/kernel.cpp
-	ld -m elf_i386 --oformat=binary -Ttext=0x1000 -nostartfiles -nostdlib -e kernel_entry -o build/kernel.bin build/kernel_entry.o build/kernel.o
+OS_TARGET     := $(BIN_DIR)/dokkan.img
+BOOT_TARGET   := $(BIN_DIR)/boot.bin
+KERNEL_TARGET := $(BIN_DIR)/kernel.bin
 
-build/os.img: build/boot.bin build/kernel.bin
-	cat build/boot.bin build/kernel.bin > build/os.img
+AS := as
+CC := gcc
+LD := ld
+VM := qemu-system-i386
+OD := objdump
+
+ASFLAGS := --32
+CFLAGS  := -m32 -ffreestanding -fno-pie -Wall -Wextra
+LDFLAGS := -m elf_i386 --oformat=binary -nostartfiles -nostdlib
+VMFLAGS := -no-reboot -drive
+ODFLAGS := -D -m i386
+
+SRCS := $(shell find $(SRC_DIR) -type f -name *.cpp)
+OBJS := $(SRCS:src/%.cpp=build/%.o)
+
+$(OS_TARGET): $(BOOT_TARGET) $(KERNEL_TARGET)
+	echo $(SRCS)
+	echo $(OBJS)
+	cat $^ > $@
+
+$(BOOT_TARGET): $(BUILD_DIR)/boot/boot.o
+	mkdir -p $(@D)
+	$(LD) $(LDFLAGS) -Ttext=0x7C00 -e boot_entry $< -o $@
+
+$(KERNEL_TARGET): $(BUILD_DIR)/kernel/kernel_entry.o $(BUILD_DIR)/kernel/kernel.o $(OBJS)
+	mkdir -p $(@D)
+	$(LD) $(LDFLAGS) -Ttext=0x1000 -e kernel_entry $^ -o $@
+
+$(BUILD_DIR)/%.o: $(SRC_DIR)/%.s
+	mkdir -p $(@D)
+	$(AS) $(ASFLAGS) -I$(<D) $< -o $@
+
+$(BUILD_DIR)/%.o: $(SRC_DIR)/%.cpp
+	mkdir -p $(@D)
+	$(CC) $(CFLAGS) -Iinclude -I$(<D) -c $< -o $@
 
 clean:
-	rm -rf build
+	rm -rf $(BIN_DIR)
+	rm -rf $(BUILD_DIR)
 
-run: build/os.img
-	qemu-system-i386 -no-reboot -drive file=build/os.img,index=0,media=disk,format=raw
+run: $(OS_TARGET)
+	$(VM) $(VMFLAGS) file=$<,index=0,media=disk,format=raw
 
-debug: build/boot.bin
-	objdump -D -m i386 -b binary -d build/boot.bin > build/boot_bin.txt
-	objdump -D -m i386 -d           build/boot.o   > build/boot_o.txt
+disas: $(BOOT_TARGET) $(KERNEL_TARGET) $(OS_TARGET)
+	$(OD) $(ODFLAGS) -b binary $(BOOT_TARGET) > $(BOOT_TARGET).disas
+	$(OD) $(ODFLAGS) -b binary $(KERNEL_TARGET) > $(KERNEL_TARGET).disas
+	$(OD) $(ODFLAGS) -b binary $(OS_TARGET) > $(OS_TARGET).disas
 
 format:
 	find . -name *.cpp -or -name *.hpp | xargs clang-format -i

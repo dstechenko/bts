@@ -3,3 +3,4 @@
 # License: http://www.gnu.org/licenses/gpl.html
 
 build/*
+bin/*
