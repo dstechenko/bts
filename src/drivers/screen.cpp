@@ -94,12 +94,12 @@ void printCharacter(char text, int col, int row, uint8_t data) {
 }  // namespace
 
 /* static */
-void Screen::print(string_t data) {
+void Screen::print(const char* data) {
   printAt(data, /* col = */ -1, /* row = */ -1);
 }
 
 /* static */
-void Screen::printAt(string_t data, int col, int row) {
+void Screen::printAt(const char* data, int col, int row) {
   if (col >= 0 && row >= 0) {
     setCursorOffset(getScreenOffset(col, row));
   }
@@ -109,7 +109,7 @@ void Screen::printAt(string_t data, int col, int row) {
 }
 
 /* static */
-void Screen::printLine(string_t data) {
+void Screen::printLine(const char* data) {
   print(data);
   printLine();
 }

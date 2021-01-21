@@ -8,9 +8,9 @@ namespace dokkan::drivers {
 class Screen {
  public:
   explicit Screen() = delete;
-  static void print(string_t data);
-  static void printAt(string_t data, int col, int row);
-  static void printLine(string_t);
+  static void print(const char* data);
+  static void printAt(const char* data, int col, int row);
+  static void printLine(const char*);
   static void printLine();
   static void clear();
 };

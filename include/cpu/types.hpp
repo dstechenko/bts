@@ -10,7 +10,7 @@ using int16_t = short;
 using uint8_t = unsigned char;
 using int8_t = char;
 
-using string_t = const char*;
+using size_t = int32_t;
 
 }  // namespace dokkan
 

@@ -5,25 +5,25 @@ namespace dokkan::kernel {
 /* static */
 uint8_t Ports::readByte(uint16_t port) {
   uint8_t in;
-  asm("in %%dx, %%al" : "=a"(in) : "d"(port));
+  asm volatile("in %%dx, %%al" : "=a"(in) : "d"(port));
   return in;
 }
 
 /* static */
 void Ports::writeByte(uint16_t port, uint8_t data) {
-  asm("out %%al, %%dx" : : "a"(data), "d"(port));
+  asm volatile("out %%al, %%dx" : : "a"(data), "d"(port));
 }
 
 /* static */
 uint16_t Ports::readWord(uint16_t port) {
   uint16_t in;
-  asm("in %%dx, %%ax" : "=a"(in) : "d"(port));
+  asm volatile("in %%dx, %%ax" : "=a"(in) : "d"(port));
   return in;
 }
 
 /* static */
 void Ports::writeWord(uint16_t port, uint16_t data) {
-  asm("out %%ax, %%dx" : : "a"(data), "d"(port));
+  asm volatile("out %%ax, %%dx" : : "a"(data), "d"(port));
 }
 
 }  // namespace dokkan::kernel

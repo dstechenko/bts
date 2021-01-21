@@ -3,13 +3,12 @@
 namespace dokkan::kernel {
 
 /* static */
-void Utils::copyMemory(uint8_t* src, uint8_t* dst, int num) {
-  for (int it = 0; it < num; it++) {
-    dst[it] = src[it];
+void Utils::copyMemory(void* dst, const void* src, size_t num) {
+  auto* dstBytes = reinterpret_cast<uint8_t*>(dst);
+  const auto* srcBytes = reinterpret_cast<const uint8_t*>(src);
+  for (size_t it = 0; it < num; it++) {
+    dstBytes[it] = srcBytes[it];
   }
 }
-
-/* static */
-void Utils::convertIntToAscii(int in, string_t out) {}
 
 }  // namespace dokkan::kernel
