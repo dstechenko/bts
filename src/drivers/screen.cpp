@@ -39,8 +39,8 @@ int handleScrolling(int offset) {
   if (offset >= VGA_MAX_COLS * VGA_MAX_ROWS) {
     for (int row = 1; row < VGA_MAX_ROWS; row++) {
       Utils::copyMemory(
-          VideoTextData::getBytes(getScreenOffset(/* col = */ 0, row)),
           VideoTextData::getBytes(getScreenOffset(/* col = */ 0, row - 1)),
+          VideoTextData::getBytes(getScreenOffset(/* col = */ 0, row)),
           sizeof(VideoTextData) * VGA_MAX_COLS);
     }
 

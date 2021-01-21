@@ -4,16 +4,15 @@ using dokkan::drivers::Screen;
 
 namespace dokkan::kernel {
 
-void kernel_init() {
+namespace {
+
+void init() {
   Screen::clear();
-  for (int it = 1; it <= 24; it++) {
-    for (int jt = 1; jt <= it; jt++) {
-      Screen::print("*");
-    }
-    Screen::printLine();
-  }
+  Screen::printLine("Dokkan kernel init...");
 }
+
+}  // namespace
 
 }  // namespace dokkan::kernel
 
-extern "C" void kernel_main() { dokkan::kernel::kernel_init(); }
+extern "C" void kernel_main() { dokkan::kernel::init(); }
