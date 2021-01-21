@@ -63,7 +63,7 @@ size_t getCursorOffset() {
   Ports::writeByte(REG_SCREEN_CTRL, REG_SCREEN_CURSOR_HB);
   size_t offset = Ports::readByte(REG_SCREEN_DATA) << 8;
   Ports::writeByte(REG_SCREEN_CTRL, REG_SCREEN_CURSOR_LB);
-  offset += Ports::readByte(REG_SCREEN_DATA);
+  offset |= Ports::readByte(REG_SCREEN_DATA);
   return offset;
 }
 

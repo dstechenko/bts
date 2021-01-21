@@ -29,6 +29,11 @@ class GdtControl {
                   uint8_t access, uint8_t granularity);
 };
 
+class GdtDefault {
+ public:
+  explicit GdtDefault() = delete;
+};
+
 }  // namespace dokkan::kernel
 
 #endif
