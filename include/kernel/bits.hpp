@@ -3,8 +3,6 @@
 
 #include <cpu/types.hpp>
 
-namespace dokkan::kernel {
-
 #define LOW_HALF_BYTE(byte) (static_cast<uint8_t>(byte & 0x0F))
 #define HIGH_HALF_BYTE(byte) (LOW_HALF_BYTE(byte >> 4))
 
@@ -13,7 +11,5 @@ namespace dokkan::kernel {
 
 #define LOW_WORD(dword) (static_cast<uint16_t>(dword & 0xFFFF))
 #define HIGH_WORD(dword) (LOW_WORD(dword >> 16))
-
-}  // namespace dokkan::kernel
 
 #endif
