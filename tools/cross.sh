@@ -53,6 +53,6 @@ make all-target-libgcc
 make install-gcc
 make install-target-libgcc
 
-cd $(dir "$TOOLS_DIR")
+cd $(dirname "$TOOLS_DIR")
 
 rm -rf "$DOWNLOAD_DIR"

@@ -11,8 +11,8 @@ TOOLCHAIN := $(TOOLS_DIR)/cross/bin/i686-elf
 
 AS  := $(TOOLCHAIN)-as
 CC  := $(TOOLCHAIN)-gcc
-CPP := $(TOOLCHAIN)-cpp
 CXX := $(TOOLCHAIN)-g++
+CPP := $(TOOLCHAIN)-cpp
 LD  := $(TOOLCHAIN)-ld
 OD  := $(TOOLCHAIN)-objdump
 
