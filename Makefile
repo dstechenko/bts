@@ -10,25 +10,18 @@ KERNEL_TARGET := $(BIN_DIR)/kernel.bin
 TOOLCHAIN := $(TOOLS_DIR)/cross/bin/i686-elf
 
 AS  := $(TOOLCHAIN)-as
+LD  := $(TOOLCHAIN)-gcc
 CC  := $(TOOLCHAIN)-gcc
 CXX := $(TOOLCHAIN)-g++
 CPP := $(TOOLCHAIN)-cpp
-LD  := $(TOOLCHAIN)-ld
 OD  := $(TOOLCHAIN)-objdump
-
 VM  := qemu-system-i386
-
-# ASFLAGS   := --32
-# CXXFLAGS  := -m32 -ffreestanding -fno-exceptions -fno-rtti -fno-pie -Wall -Wextra
-# LDFLAGS   := -m elf_i386 --oformat=binary -nostartfiles -nostdlib
-# VMFLAGS   := -no-reboot -drive
-# ODFLAGS   := -D -m i386
 
 ASFLAGS  :=
 CXXFLAGS := -ffreestanding -fno-exceptions -fno-rtti -Wall -Wextra
-LDFLAGS  := -nostdlib -lgcc
+LDFLAGS  := -nostdlib -lgcc -Wl,--oformat=binary
 VMFLAGS  := -no-reboot -drive
-ODFLAGS  := -D
+ODFLAGS  := -D -m i386
 
 SRCS := $(shell find $(SRC_DIR) -type f -name *.cpp)
 OBJS := $(SRCS:src/%.cpp=build/%.o)
@@ -72,4 +65,5 @@ format:
 cross:
 	$(TOOLS_DIR)/cross.sh
 
-.PHONY: clean run disas format cross
+.PHONY:
+	clean run disas format cross
