@@ -10,10 +10,10 @@ KERNEL_TARGET := $(BIN_DIR)/kernel.bin
 TOOLCHAIN := $(TOOLS_DIR)/cross/bin/i686-elf
 
 AS  := $(TOOLCHAIN)-as
-LD  := $(TOOLCHAIN)-gcc
+CPP := $(TOOLCHAIN)-cpp
 CC  := $(TOOLCHAIN)-gcc
 CXX := $(TOOLCHAIN)-g++
-CPP := $(TOOLCHAIN)-cpp
+LD  := $(CC)
 OD  := $(TOOLCHAIN)-objdump
 VM  := qemu-system-i386
 
