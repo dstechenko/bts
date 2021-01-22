@@ -1,5 +1,5 @@
-SRC_DIR		:= src
-BIN_DIR		:= bin
+SRC_DIR   := src
+BIN_DIR   := bin
 BUILD_DIR := build
 TOOLS_DIR := tools
 
@@ -9,26 +9,26 @@ KERNEL_TARGET := $(BIN_DIR)/kernel.bin
 
 TOOLCHAIN := $(TOOLS_DIR)/cross/bin/i686-elf
 
-AS	:= $(TOOLCHAIN)-as
-CC	:= $(TOOLCHAIN)-gcc
+AS  := $(TOOLCHAIN)-as
+CC  := $(TOOLCHAIN)-gcc
 CPP := $(TOOLCHAIN)-cpp
 CXX := $(TOOLCHAIN)-g++
-LD	:= $(TOOLCHAIN)-ld
-OD	:= $(TOOLCHAIN)-objdump
+LD  := $(TOOLCHAIN)-ld
+OD  := $(TOOLCHAIN)-objdump
 
-VM	:= qemu-system-i386
+VM  := qemu-system-i386
 
-# ASFLAGS	 := --32
-# CXXFLAGS := -m32 -ffreestanding -fno-exceptions -fno-rtti -fno-pie -Wall -Wextra
-# LDFLAGS	 := -m elf_i386 --oformat=binary -nostartfiles -nostdlib
-# VMFLAGS	 := -no-reboot -drive
-# ODFLAGS	 := -D -m i386
+# ASFLAGS   := --32
+# CXXFLAGS  := -m32 -ffreestanding -fno-exceptions -fno-rtti -fno-pie -Wall -Wextra
+# LDFLAGS   := -m elf_i386 --oformat=binary -nostartfiles -nostdlib
+# VMFLAGS   := -no-reboot -drive
+# ODFLAGS   := -D -m i386
 
-ASFLAGS	 :=
+ASFLAGS  :=
 CXXFLAGS := -ffreestanding -fno-exceptions -fno-rtti -Wall -Wextra
-LDFLAGS	 := -nostdlib -lgcc
-VMFLAGS	 := -no-reboot -drive
-ODFLAGS	 := -D
+LDFLAGS  := -nostdlib -lgcc
+VMFLAGS  := -no-reboot -drive
+ODFLAGS  := -D
 
 SRCS := $(shell find $(SRC_DIR) -type f -name *.cpp)
 OBJS := $(SRCS:src/%.cpp=build/%.o)
