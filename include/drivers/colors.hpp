@@ -1,7 +1,7 @@
 #ifndef DOKKAN_DRIVERS_COLORS_H
 #define DOKKAN_DRIVERS_COLORS_H
 
-#include <cpu/types.hpp>
+#include <stdint.h>
 
 namespace dokkan::drivers {
 

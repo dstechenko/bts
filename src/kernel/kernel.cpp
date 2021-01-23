@@ -1,3 +1,4 @@
+#include <stddef.h>
 #include <drivers/screen.hpp>
 
 using dokkan::drivers::Screen;
@@ -8,14 +9,14 @@ namespace {
 
 void init() {
   Screen::clear();
-  for (size_t it = 0; it <= 15; it++) {
-    for (size_t jt = 0; jt <= it; jt++) {
+  for (size_t it = 0; it < 15; it++) {
+    for (size_t jt = 0; jt < it; jt++) {
       Screen::print("*");
     }
     Screen::printLine();
   }
-  for (size_t it = 15; it >= 0; it--) {
-    for (size_t jt = 0; jt <= it; jt++) {
+  for (size_t it = 15; it > 0; it--) {
+    for (size_t jt = 0; jt < it; jt++) {
       Screen::print("*");
     }
     Screen::printLine();

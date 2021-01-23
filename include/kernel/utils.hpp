@@ -1,7 +1,8 @@
 #ifndef DOKKAN_KERNEL_UTILS_H
 #define DOKKAN_KERNEL_UTILS_H
 
-#include <cpu/types.hpp>
+#include <stddef.h>
+#include <stdint.h>
 
 namespace dokkan::kernel {
 

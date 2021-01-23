@@ -1,7 +1,7 @@
 #ifndef DOKKAN_KERNEL_GDT_H
 #define DOKKAN_KERNEL_GDT_H
 
-#include <cpu/types.hpp>
+#include <stdint.h>
 #include <portability/layout.hpp>
 
 namespace dokkan::kernel {

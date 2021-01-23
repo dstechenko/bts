@@ -18,7 +18,7 @@ OD  := $(TOOLCHAIN)-objdump
 VM  := qemu-system-i386
 
 ASFLAGS  :=
-CXXFLAGS := -ffreestanding -fno-exceptions -fno-rtti -Wall -Wextra
+CXXFLAGS := -g -ffreestanding -fno-exceptions -fno-rtti -Wall -Wextra -std=c++17
 LDFLAGS  := -nostdlib -lgcc -Wl,--oformat=binary
 VMFLAGS  := -no-reboot -drive
 ODFLAGS  := -D -m i386

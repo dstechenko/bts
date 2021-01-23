@@ -17,7 +17,6 @@ void GdtControl::init(GdtEntry* base, uint16_t limit) {
 
 /* static */
 void GdtControl::flush() {
-  auto pointer = reinterpret_cast<uint32_t>(&control);
 }
 
 /* static */

@@ -1,7 +1,7 @@
 #ifndef DOKKAN_KERNEL_PORTS_H
 #define DOKKAN_KERNEL_PORTS_H
 
-#include <cpu/types.hpp>
+#include <stdint.h>
 
 namespace dokkan::kernel {
 

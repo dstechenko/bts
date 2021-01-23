@@ -1,7 +1,7 @@
 #ifndef DOKKAN_KERNEL_BITS_H
 #define DOKKAN_KERNEL_BITS_H
 
-#include <cpu/types.hpp>
+#include <stdint.h>
 
 #define MASK_LOW_HALF_BYTE(byte) (byte & 0x0F)
 #define MASK_HIGH_HALF_BYTE(byte) (byte & 0xF0)

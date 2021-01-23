@@ -25,23 +25,23 @@ namespace {
 struct VideoTextData {
   uint8_t text;
   uint8_t data;
-  static VideoTextData* get(size_t offset = 0) {
+  static VideoTextData* get(int16_t offset = 0) {
     return reinterpret_cast<VideoTextData*>(VGA_VIDEO_ADDRESS) + offset;
   }
-  static uint8_t* getBytes(size_t offset = 0) {
+  static uint8_t* getBytes(int16_t offset = 0) {
     return reinterpret_cast<uint8_t*>(get(offset));
   }
 } PACKED;
 
-size_t getScreenOffset(size_t col, size_t row) {
+int16_t getScreenOffset(int16_t col, int16_t row) {
   return VGA_MAX_COLS * row + col;
 }
 
-size_t getScreenRow(size_t offset) { return offset / VGA_MAX_COLS; }
+int16_t getScreenRow(int16_t offset) { return offset / VGA_MAX_COLS; }
 
-size_t handleScrolling(size_t offset) {
+int16_t handleScrolling(int16_t offset) {
   if (offset >= VGA_MAX_COLS * VGA_MAX_ROWS) {
-    for (size_t row = 1; row < VGA_MAX_ROWS; row++) {
+    for (int16_t row = 1; row < VGA_MAX_ROWS; row++) {
       Utils::copyMemory(
           VideoTextData::getBytes(getScreenOffset(/* col = */ 0, row - 1)),
           VideoTextData::getBytes(getScreenOffset(/* col = */ 0, row)),
@@ -50,7 +50,7 @@ size_t handleScrolling(size_t offset) {
 
     const auto lastLine = getScreenOffset(/* col = */ 0, VGA_MAX_ROWS - 1);
     auto* video = VideoTextData::get(lastLine);
-    for (size_t col = 0; col < VGA_MAX_COLS; col++) {
+    for (int16_t col = 0; col < VGA_MAX_COLS; col++) {
       video[col].text = 0;
     }
 
@@ -59,25 +59,25 @@ size_t handleScrolling(size_t offset) {
   return offset;
 }
 
-size_t getCursorOffset() {
+int16_t getCursorOffset() {
   Ports::writeByte(REG_SCREEN_CTRL, REG_SCREEN_CURSOR_HB);
-  size_t offset = Ports::readByte(REG_SCREEN_DATA) << 8;
+  int16_t offset = Ports::readByte(REG_SCREEN_DATA) << 8;
   Ports::writeByte(REG_SCREEN_CTRL, REG_SCREEN_CURSOR_LB);
   offset |= Ports::readByte(REG_SCREEN_DATA);
   return offset;
 }
 
-void setCursorOffset(size_t offset) {
+void setCursorOffset(int16_t offset) {
   Ports::writeByte(REG_SCREEN_CTRL, REG_SCREEN_CURSOR_HB);
   Ports::writeByte(REG_SCREEN_DATA, HIGH_BYTE(offset));
   Ports::writeByte(REG_SCREEN_CTRL, REG_SCREEN_CURSOR_LB);
   Ports::writeByte(REG_SCREEN_DATA, LOW_BYTE(offset));
 }
 
-void printCharacter(char text, uint8_t data, size_t col, size_t row) {
+void printCharacter(char text, uint8_t data, int16_t col, int16_t row) {
   auto* video = VideoTextData::get();
 
-  size_t offset;
+  int16_t offset;
   if (col >= 0 && row >= 0) {
     offset = getScreenOffset(col, row);
   } else {
@@ -103,11 +103,11 @@ void Screen::print(const char* text) {
 }
 
 /* static */
-void Screen::printAt(const char* text, size_t col, size_t row) {
+void Screen::printAt(const char* text, int16_t col, int16_t row) {
   if (col >= 0 && row >= 0) {
     setCursorOffset(getScreenOffset(col, row));
   }
-  for (size_t it = 0; text[it] != 0; it++) {
+  for (int16_t it = 0; text[it] != 0; it++) {
     printCharacter(text[it], Colors::makeDefault(), col, row);
   }
 }
@@ -123,8 +123,8 @@ void Screen::printLine() { print("\n"); }
 
 /* static */
 void Screen::clear() {
-  for (size_t row = 0; row < VGA_MAX_ROWS; row++) {
-    for (size_t col = 0; col < VGA_MAX_COLS; col++) {
+  for (int16_t row = 0; row < VGA_MAX_ROWS; row++) {
+    for (int16_t col = 0; col < VGA_MAX_COLS; col++) {
       printCharacter(/* text = */ ' ', Colors::makeDefault(), col, row);
     }
   }
