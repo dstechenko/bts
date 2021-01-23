@@ -7,11 +7,11 @@ namespace {
 GdtPointer control;
 }
 
-extern "C" void gdt_flush(uint32_t pointer);
+extern "C" void gdt_flush(std::uint32_t pointer);
 
 /* static */
-void GdtControl::init(GdtEntry* base, uint16_t limit) {
-  control.base = reinterpret_cast<uint32_t>(base);
+void GdtControl::init(GdtEntry* base, std::uint16_t limit) {
+  control.base = reinterpret_cast<std::uint32_t>(base);
   control.limit = limit;
 }
 
@@ -19,8 +19,8 @@ void GdtControl::init(GdtEntry* base, uint16_t limit) {
 void GdtControl::flush() {}
 
 /* static */
-void GdtControl::set(GdtEntry* entry, uint32_t base, uint32_t limit,
-                     uint8_t access, uint8_t granularity) {
+void GdtControl::set(GdtEntry* entry, std::uint32_t base, std::uint32_t limit,
+                     std::uint8_t access, std::uint8_t granularity) {
   entry->baseLow = LOW_WORD(base);
   entry->baseMiddle = LOW_BYTE(HIGH_WORD(base));
   entry->baseHigh = HIGH_BYTE(HIGH_WORD(base));

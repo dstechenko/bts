@@ -1,11 +1,11 @@
 #ifndef DOKKAN_DRIVERS_COLORS_H
 #define DOKKAN_DRIVERS_COLORS_H
 
-#include <stdint.h>
+#include <cstdint>
 
 namespace dokkan::drivers {
 
-enum class Color : uint8_t {
+enum class Color : std::uint8_t {
   BLACK,
   BLUE,
   GREEN,
@@ -27,8 +27,8 @@ enum class Color : uint8_t {
 class Colors {
  public:
   explicit Colors() = delete;
-  static uint8_t make(Color foreground, Color background);
-  static uint8_t makeDefault();
+  static std::uint8_t make(Color foreground, Color background);
+  static std::uint8_t makeDefault();
 };
 
 }  // namespace dokkan::drivers

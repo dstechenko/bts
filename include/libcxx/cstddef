@@ -1,0 +1,12 @@
+#ifndef LIBCXX_CSTDDEF_H
+#define LIBCXX_CSTDDEF_H
+
+#include <stddef.h>
+
+namespace std {
+
+using ::size_t;
+
+}
+
+#endif

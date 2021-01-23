@@ -1,17 +1,17 @@
 #ifndef DOKKAN_KERNEL_PORTS_H
 #define DOKKAN_KERNEL_PORTS_H
 
-#include <stdint.h>
+#include <cstdint>
 
 namespace dokkan::kernel {
 
 class Ports {
  public:
   explicit Ports() = delete;
-  static uint8_t readByte(uint16_t port);
-  static void writeByte(uint16_t port, uint8_t data);
-  static uint16_t readWord(uint16_t port);
-  static void writeWord(uint16_t port, uint16_t data);
+  static std::uint8_t readByte(std::uint16_t port);
+  static void writeByte(std::uint16_t port, std::uint8_t data);
+  static std::uint16_t readWord(std::uint16_t port);
+  static void writeWord(std::uint16_t port, std::uint16_t data);
 };
 
 }  // namespace dokkan::kernel

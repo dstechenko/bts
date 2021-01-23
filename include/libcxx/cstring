@@ -1,0 +1,12 @@
+#ifndef LIBCXX_CSTRING_H
+#define LIBCXX_CSTRING_H
+
+#include <string.h>
+
+namespace std {
+
+using ::memcpy;
+
+}
+
+#endif

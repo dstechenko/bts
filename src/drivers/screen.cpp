@@ -1,4 +1,4 @@
-#include <string.h>
+#include <cstring>
 
 #include <drivers/colors.hpp>
 #include <drivers/screen.hpp>
@@ -23,33 +23,34 @@ namespace dokkan::drivers {
 namespace {
 
 struct VideoTextData {
-  uint8_t text;
-  uint8_t data;
-  static VideoTextData* get(int16_t offset = 0) {
+  std::uint8_t text;
+  std::uint8_t data;
+  static VideoTextData* get(std::int16_t offset = 0) {
     return reinterpret_cast<VideoTextData*>(VGA_VIDEO_ADDRESS) + offset;
   }
-  static uint8_t* getBytes(int16_t offset = 0) {
-    return reinterpret_cast<uint8_t*>(get(offset));
+  static std::uint8_t* getBytes(std::int16_t offset = 0) {
+    return reinterpret_cast<std::uint8_t*>(get(offset));
   }
 } PACKED;
 
-int16_t getScreenOffset(int16_t col, int16_t row) {
+std::int16_t getScreenOffset(std::int16_t col, std::int16_t row) {
   return VGA_MAX_COLS * row + col;
 }
 
-int16_t getScreenRow(int16_t offset) { return offset / VGA_MAX_COLS; }
+std::int16_t getScreenRow(std::int16_t offset) { return offset / VGA_MAX_COLS; }
 
-int16_t handleScrolling(int16_t offset) {
+std::int16_t handleScrolling(std::int16_t offset) {
   if (offset >= VGA_MAX_COLS * VGA_MAX_ROWS) {
-    for (int16_t row = 1; row < VGA_MAX_ROWS; row++) {
-      memcpy(VideoTextData::getBytes(getScreenOffset(/* col = */ 0, row - 1)),
-             VideoTextData::getBytes(getScreenOffset(/* col = */ 0, row)),
-             sizeof(VideoTextData) * VGA_MAX_COLS);
+    for (std::int16_t row = 1; row < VGA_MAX_ROWS; row++) {
+      std::memcpy(
+          VideoTextData::getBytes(getScreenOffset(/* col = */ 0, row - 1)),
+          VideoTextData::getBytes(getScreenOffset(/* col = */ 0, row)),
+          sizeof(VideoTextData) * VGA_MAX_COLS);
     }
 
     const auto lastLine = getScreenOffset(/* col = */ 0, VGA_MAX_ROWS - 1);
     auto* video = VideoTextData::get(lastLine);
-    for (int16_t col = 0; col < VGA_MAX_COLS; col++) {
+    for (std::int16_t col = 0; col < VGA_MAX_COLS; col++) {
       video[col].text = 0;
     }
 
@@ -58,25 +59,26 @@ int16_t handleScrolling(int16_t offset) {
   return offset;
 }
 
-int16_t getCursorOffset() {
+std::int16_t getCursorOffset() {
   Ports::writeByte(REG_SCREEN_CTRL, REG_SCREEN_CURSOR_HB);
-  int16_t offset = Ports::readByte(REG_SCREEN_DATA) << 8;
+  std::int16_t offset = Ports::readByte(REG_SCREEN_DATA) << 8;
   Ports::writeByte(REG_SCREEN_CTRL, REG_SCREEN_CURSOR_LB);
   offset |= Ports::readByte(REG_SCREEN_DATA);
   return offset;
 }
 
-void setCursorOffset(int16_t offset) {
+void setCursorOffset(std::int16_t offset) {
   Ports::writeByte(REG_SCREEN_CTRL, REG_SCREEN_CURSOR_HB);
   Ports::writeByte(REG_SCREEN_DATA, HIGH_BYTE(offset));
   Ports::writeByte(REG_SCREEN_CTRL, REG_SCREEN_CURSOR_LB);
   Ports::writeByte(REG_SCREEN_DATA, LOW_BYTE(offset));
 }
 
-void printCharacter(char text, uint8_t data, int16_t col, int16_t row) {
+void printCharacter(char text, std::uint8_t data, std::int16_t col,
+                    std::int16_t row) {
   auto* video = VideoTextData::get();
 
-  int16_t offset;
+  std::int16_t offset;
   if (col >= 0 && row >= 0) {
     offset = getScreenOffset(col, row);
   } else {
@@ -86,7 +88,7 @@ void printCharacter(char text, uint8_t data, int16_t col, int16_t row) {
   if (text == '\n') {
     offset = getScreenOffset(VGA_MAX_COLS - 1, getScreenRow(offset));
   } else {
-    video[offset] = {.text = static_cast<uint8_t>(text), .data = data};
+    video[offset] = {.text = static_cast<std::uint8_t>(text), .data = data};
   }
 
   offset++;
@@ -102,11 +104,11 @@ void Screen::print(const char* text) {
 }
 
 /* static */
-void Screen::printAt(const char* text, int16_t col, int16_t row) {
+void Screen::printAt(const char* text, std::int16_t col, std::int16_t row) {
   if (col >= 0 && row >= 0) {
     setCursorOffset(getScreenOffset(col, row));
   }
-  for (int16_t it = 0; text[it] != 0; it++) {
+  for (std::int16_t it = 0; text[it] != 0; it++) {
     printCharacter(text[it], Colors::makeDefault(), col, row);
   }
 }
@@ -122,8 +124,8 @@ void Screen::printLine() { print("\n"); }
 
 /* static */
 void Screen::clear() {
-  for (int16_t row = 0; row < VGA_MAX_ROWS; row++) {
-    for (int16_t col = 0; col < VGA_MAX_COLS; col++) {
+  for (std::int16_t row = 0; row < VGA_MAX_ROWS; row++) {
+    for (std::int16_t col = 0; col < VGA_MAX_COLS; col++) {
       printCharacter(/* text = */ ' ', Colors::makeDefault(), col, row);
     }
   }

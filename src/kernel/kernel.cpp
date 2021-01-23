@@ -1,4 +1,4 @@
-#include <stddef.h>
+#include <cstddef>
 
 #include <drivers/screen.hpp>
 
@@ -11,25 +11,25 @@ namespace {
 class Parent {
  public:
   virtual ~Parent() = default;
-  virtual size_t limit() = 0;
+  virtual std::size_t limit() = 0;
 };
 
 class Child : public Parent {
  public:
-  size_t limit() override { return 15; }
+  std::size_t limit() override { return 15; }
 };
 
 void init() {
   Child child;
   Screen::clear();
-  for (size_t it = 0; it < child.limit(); it++) {
-    for (size_t jt = 0; jt < it; jt++) {
+  for (std::size_t it = 0; it < child.limit(); it++) {
+    for (std::size_t jt = 0; jt < it; jt++) {
       Screen::print("*");
     }
     Screen::printLine();
   }
-  for (size_t it = child.limit(); it > 0; it--) {
-    for (size_t jt = 0; jt < it; jt++) {
+  for (std::size_t it = child.limit(); it > 0; it--) {
+    for (std::size_t jt = 0; jt < it; jt++) {
       Screen::print("*");
     }
     Screen::printLine();
