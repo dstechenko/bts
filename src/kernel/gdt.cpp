@@ -16,8 +16,7 @@ void GdtControl::init(GdtEntry* base, uint16_t limit) {
 }
 
 /* static */
-void GdtControl::flush() {
-}
+void GdtControl::flush() {}
 
 /* static */
 void GdtControl::set(GdtEntry* entry, uint32_t base, uint32_t limit,

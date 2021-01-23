@@ -2,6 +2,7 @@
 #define DOKKAN_KERNEL_GDT_H
 
 #include <stdint.h>
+
 #include <portability/layout.hpp>
 
 namespace dokkan::kernel {
