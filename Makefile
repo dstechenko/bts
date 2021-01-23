@@ -13,18 +13,25 @@ AS  := $(TOOLCHAIN)-as
 CPP := $(TOOLCHAIN)-cpp
 CC  := $(TOOLCHAIN)-gcc
 CXX := $(TOOLCHAIN)-g++
-LD  := $(CC)
+LD  := $(CXX)
 OD  := $(TOOLCHAIN)-objdump
 VM  := qemu-system-i386
 
 ASFLAGS  :=
 CXXFLAGS := -g -ffreestanding -fno-exceptions -fno-rtti -Wall -Wextra -std=c++17
-LDFLAGS  := -nostdlib -lgcc -Wl,--oformat=binary
+LDFLAGS  := -nostdlib -Wl,--oformat=binary
+LDLIBS   := -lgcc
 VMFLAGS  := -no-reboot -drive
 ODFLAGS  := -D -m i386
 
 SRCS := $(shell find $(SRC_DIR) -type f -name *.cpp)
 OBJS := $(SRCS:src/%.cpp=build/%.o)
+
+CRTI_OBJ     := $(BUILD_DIR)/libc/crti.o
+CRTBEGIN_OBJ := $(shell $(CXX) $(CXXFLAGS) -print-file-name=crtbegin.o)
+CRTEND_OBJ   := $(shell $(CXX) $(CXXFLAGS) -print-file-name=crtend.o)
+CRTN_OBJ     := $(BUILD_DIR)/libc/crtn.o
+LINK_OBJS    := $(OBJS)
 
 $(OS_TARGET): $(BOOT_TARGET) $(KERNEL_TARGET)
 	echo $(SRCS)
@@ -35,9 +42,9 @@ $(BOOT_TARGET): $(BUILD_DIR)/boot/boot.o
 	mkdir -p $(@D)
 	$(LD) $(LDFLAGS) -Ttext=0x7C00 -e boot_entry $< -o $@
 
-$(KERNEL_TARGET): $(BUILD_DIR)/boot/kernel_entry.o $(BUILD_DIR)/kernel/kernel.o $(OBJS)
+$(KERNEL_TARGET): $(BUILD_DIR)/boot/kernel_entry.o $(LINK_OBJS)
 	mkdir -p $(@D)
-	$(LD) $(LDFLAGS) -Ttext=0x7E00 -e kernel_entry $^ -o $@
+	$(LD) $(LDFLAGS) -Ttext=0x7E00 -e kernel_entry $^ $(LDLIBS) -o $@
 
 $(BUILD_DIR)/%.o: $(SRC_DIR)/%.s
 	mkdir -p $(@D)
