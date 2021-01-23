@@ -1,3 +1,4 @@
+INC_DIR   := include
 SRC_DIR   := src
 BIN_DIR   := bin
 BUILD_DIR := build
@@ -26,6 +27,8 @@ ODFLAGS  := -D -m i386
 
 SRCS := $(shell find $(SRC_DIR) -type f -name *.cpp)
 OBJS := $(SRCS:src/%.cpp=build/%.o)
+INCS := $(shell dir $(INC_DIR))
+INCS := $(INCS:%=-I$(INC_DIR)/%)
 
 CRTI_OBJ     := $(BUILD_DIR)/libc/crti.o
 CRTBEGIN_OBJ := $(shell $(CXX) $(CXXFLAGS) -print-file-name=crtbegin.o)
@@ -34,8 +37,6 @@ CRTN_OBJ     := $(BUILD_DIR)/libc/crtn.o
 LINK_OBJS    := $(OBJS)
 
 $(OS_TARGET): $(BOOT_TARGET) $(KERNEL_TARGET)
-	echo $(SRCS)
-	echo $(OBJS)
 	cat $^ > $@
 
 $(BOOT_TARGET): $(BUILD_DIR)/boot/boot.o
@@ -52,7 +53,7 @@ $(BUILD_DIR)/%.o: $(SRC_DIR)/%.s
 
 $(BUILD_DIR)/%.o: $(SRC_DIR)/%.cpp
 	mkdir -p $(@D)
-	$(CXX) $(CXXFLAGS) -Iinclude -I$(<D) -c $< -o $@
+	$(CXX) $(CXXFLAGS) $(INCS) -I$(<D) -c $< -o $@
 
 clean:
 	rm -rf $(BIN_DIR)
