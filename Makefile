@@ -68,7 +68,7 @@ disas: $(BOOT_TARGET) $(KERNEL_TARGET) $(OS_TARGET)
 	$(OD) $(ODFLAGS) -b binary $(OS_TARGET) > $(OS_TARGET).disas
 
 format:
-	find . -name *.cpp -or -name *.hpp | xargs clang-format -i --style=Google
+	find . -name *.cpp -or -name *.hpp  -or -name *.h | xargs clang-format -i --style=Google
 
 cross:
 	$(TOOLS_DIR)/cross.sh

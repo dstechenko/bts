@@ -1,8 +1,9 @@
+#include <string.h>
+
 #include <drivers/colors.hpp>
 #include <drivers/screen.hpp>
 #include <kernel/bits.hpp>
 #include <kernel/ports.hpp>
-#include <kernel/utils.hpp>
 #include <portability/layout.hpp>
 
 #define VGA_VIDEO_ADDRESS 0x000B8000
@@ -16,7 +17,6 @@
 #define REG_SCREEN_CURSOR_LB 0x0F
 
 using dokkan::kernel::Ports;
-using dokkan::kernel::Utils;
 
 namespace dokkan::drivers {
 
@@ -42,10 +42,9 @@ int16_t getScreenRow(int16_t offset) { return offset / VGA_MAX_COLS; }
 int16_t handleScrolling(int16_t offset) {
   if (offset >= VGA_MAX_COLS * VGA_MAX_ROWS) {
     for (int16_t row = 1; row < VGA_MAX_ROWS; row++) {
-      Utils::copyMemory(
-          VideoTextData::getBytes(getScreenOffset(/* col = */ 0, row - 1)),
-          VideoTextData::getBytes(getScreenOffset(/* col = */ 0, row)),
-          sizeof(VideoTextData) * VGA_MAX_COLS);
+      memcpy(VideoTextData::getBytes(getScreenOffset(/* col = */ 0, row - 1)),
+             VideoTextData::getBytes(getScreenOffset(/* col = */ 0, row)),
+             sizeof(VideoTextData) * VGA_MAX_COLS);
     }
 
     const auto lastLine = getScreenOffset(/* col = */ 0, VGA_MAX_ROWS - 1);
