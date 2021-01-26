@@ -1,7 +1,7 @@
 #include <cstddef>
 
-#include <portability/require.hpp>
 #include <drivers/screen.hpp>
+#include <portability/require.hpp>
 
 using dokkan::drivers::Screen;
 
@@ -21,8 +21,8 @@ class Child : public Parent {
 };
 
 void init() {
-  Child child;
   Screen::clear();
+  Child child;
   for (std::size_t it = 0; it < child.limit(); it++) {
     for (std::size_t jt = 0; jt < it; jt++) {
       Screen::print("*");

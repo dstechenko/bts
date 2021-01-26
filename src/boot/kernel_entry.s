@@ -1,4 +1,7 @@
   .code32
+
+  .text
+
   .extern kernel_main
   .global kernel_entry
 

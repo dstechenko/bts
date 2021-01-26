@@ -1,6 +1,10 @@
 boot_sector:
   .code16
 
+  .text
+
+  .global boot_entry
+
   .equ BOOT_SECTOR_OFFSET,              0x7C00
   .equ BOOT_SECTOR_SIZE,                0x0200
 
@@ -15,10 +19,6 @@ boot_sector:
 
   .equ BOOT_PROTECTED_ENABLE_GDT_FLAG,  0x00000001
   .equ BOOT_PROTECTED_STACK_TOP,        0x00FFFFFF
-
-  .text
-
-  .global boot_entry
 
 boot_entry:
 

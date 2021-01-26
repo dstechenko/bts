@@ -4,7 +4,7 @@ BIN_DIR   := bin
 BUILD_DIR := build
 TOOLS_DIR := tools
 
-OS_TARGET     := $(BIN_DIR)/dokkan.img
+OS_TARGET     := $(BIN_DIR)/os.bin
 BOOT_TARGET   := $(BIN_DIR)/boot.bin
 KERNEL_TARGET := $(BIN_DIR)/kernel.bin
 
@@ -20,7 +20,7 @@ VM  := qemu-system-i386
 
 ASFLAGS  :=
 CXXFLAGS := -g -ffreestanding -fno-exceptions -fno-rtti -Wall -Wextra -std=c++17
-LDFLAGS  := -nostdlib -Wl,--oformat=binary
+LDFLAGS  := -nostdlib
 LDLIBS   := -lgcc
 VMFLAGS  := -no-reboot -drive
 ODFLAGS  := -D -m i386
@@ -34,18 +34,17 @@ CRTI_OBJ     := $(BUILD_DIR)/libc/crti.o
 CRTBEGIN_OBJ := $(shell $(CXX) $(CXXFLAGS) -print-file-name=crtbegin.o)
 CRTEND_OBJ   := $(shell $(CXX) $(CXXFLAGS) -print-file-name=crtend.o)
 CRTN_OBJ     := $(BUILD_DIR)/libc/crtn.o
-LINK_OBJS    := $(OBJS)
 
 $(OS_TARGET): $(BOOT_TARGET) $(KERNEL_TARGET)
-	cat $^ > $@
+				cat $^ > $@
 
 $(BOOT_TARGET): $(BUILD_DIR)/boot/boot.o
-	mkdir -p $(@D)
-	$(LD) $(LDFLAGS) -Ttext=0x7C00 -e boot_entry $< -o $@
+			mkdir -p $(@D)
+			$(LD) $(LDFLAGS) -T $(SRC_DIR)/boot/link.ld $< -o $@
 
-$(KERNEL_TARGET): $(BUILD_DIR)/boot/kernel_entry.o $(LINK_OBJS)
-	mkdir -p $(@D)
-	$(LD) $(LDFLAGS) -Ttext=0x8000 -e kernel_entry $^ $(LDLIBS) -o $@
+$(KERNEL_TARGET): $(BUILD_DIR)/boot/kernel_entry.o $(OBJS)
+			mkdir -p $(@D)
+			$(LD) $(LDFLAGS) -T $(SRC_DIR)/kernel/link.ld $^ $(LDLIBS) -o $@
 
 $(BUILD_DIR)/%.o: $(SRC_DIR)/%.s
 	mkdir -p $(@D)
