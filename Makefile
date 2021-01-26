@@ -45,7 +45,7 @@ $(BOOT_TARGET): $(BUILD_DIR)/boot/boot.o
 
 $(KERNEL_TARGET): $(BUILD_DIR)/boot/kernel_entry.o $(LINK_OBJS)
 	mkdir -p $(@D)
-	$(LD) $(LDFLAGS) -Ttext=0x7E00 -e kernel_entry $^ $(LDLIBS) -o $@
+	$(LD) $(LDFLAGS) -Ttext=0x8000 -e kernel_entry $^ $(LDLIBS) -o $@
 
 $(BUILD_DIR)/%.o: $(SRC_DIR)/%.s
 	mkdir -p $(@D)

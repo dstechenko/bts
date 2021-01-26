@@ -3,16 +3,18 @@ boot_sector:
 
   .equ BOOT_SECTOR_OFFSET,              0x7C00
   .equ BOOT_SECTOR_SIZE,                0x0200
+
+  .equ BOOT_STACK_SIZE,                 BOOT_SECTOR_SIZE
+  .equ BOOT_STACK_TOP,                  BOOT_SECTOR_OFFSET + BOOT_SECTOR_SIZE + BOOT_STACK_SIZE - 0x0001
+
+  .equ BOOT_KERNEL_LOCATION,            BOOT_STACK_TOP + 0x0001
+  .equ BOOT_KERNEL_SECTORS,             0x07
+
   .equ BOOT_SIGNATURE,                  0xAA55
   .equ BOOT_SIGNATURE_SIZE,             0x0002
 
-  .equ BOOT_STACK_LOCATION,             0x9000
-  .equ BOOT_DRIVE_INIT_VALUE,           0x00
-
-  .equ BOOT_KERNEL_SECTORS,             0x0005
-
-  .equ BOOT_PROTECTED_STACK_LOCATION,   0x00090000
   .equ BOOT_PROTECTED_ENABLE_GDT_FLAG,  0x00000001
+  .equ BOOT_PROTECTED_STACK_TOP,        0x00FFFFFF
 
   .text
 
@@ -40,11 +42,11 @@ boot_init_segments:
   mov %ax, %ss
 
 boot_init_stack:
-  mov $BOOT_STACK_LOCATION, %bp
+  mov $BOOT_STACK_TOP, %bp
   mov %bp, %sp
 
 boot_load_kernel:
-  mov $boot_kernel_sector, %bx
+  mov $BOOT_KERNEL_LOCATION, %bx
   mov $BOOT_KERNEL_SECTORS, %dh
   mov (boot_drive), %dl
   call load_disk
@@ -71,20 +73,19 @@ boot_init_protected_mode:
   mov %ax, %fs
   mov %ax, %gs
 
-  mov $BOOT_PROTECTED_STACK_LOCATION, %ebp;
+  mov $BOOT_PROTECTED_STACK_TOP, %ebp;
   mov %ebp, %esp
 
 boot_kernel:
-  call boot_kernel_sector
+  call BOOT_KERNEL_LOCATION
+  cli
 
 boot_wait:
   hlt
   jmp boot_wait
 
 boot_drive:
-  .byte BOOT_DRIVE_INIT_VALUE
+  .byte 0x00
 
   .space BOOT_SECTOR_SIZE - BOOT_SIGNATURE_SIZE - (. - boot_sector)
   .word BOOT_SIGNATURE
-
-boot_kernel_sector:
