@@ -1,5 +1,6 @@
 #include <cstddef>
 
+#include <portability/require.hpp>
 #include <drivers/screen.hpp>
 
 using dokkan::drivers::Screen;
