@@ -9,3 +9,11 @@ void* memcpy(void* dst, const void* src, size_t num) {
   }
   return dst;
 }
+
+size_t strlen(const char* str) {
+  size_t len = 0;
+  while (str[len] != 0) {
+    len++;
+  }
+  return len;
+}
