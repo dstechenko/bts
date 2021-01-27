@@ -12,7 +12,7 @@ boot_sector:
   .equ BOOT_STACK_TOP,                  BOOT_SECTOR_OFFSET + BOOT_SECTOR_SIZE + BOOT_STACK_SIZE - 0x0001
 
   .equ BOOT_KERNEL_LOCATION,            BOOT_STACK_TOP + 0x0001
-  .equ BOOT_KERNEL_SECTORS,             0x07
+  .equ BOOT_KERNEL_SECTORS,             0x05
 
   .equ BOOT_SIGNATURE,                  0xAA55
   .equ BOOT_SIGNATURE_SIZE,             0x0002

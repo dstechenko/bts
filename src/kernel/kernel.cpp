@@ -20,22 +20,29 @@ class Child : public Parent {
   std::size_t limit() override { return 15; }
 };
 
-void init() {
-  Screen::clear();
-  Child child;
-  for (std::size_t it = 0; it < child.limit(); it++) {
-    for (std::size_t jt = 0; jt < it; jt++) {
-      Screen::print("*");
+class Init {
+ public:
+  explicit Init() {
+    Screen::clear();
+    Child child;
+    for (std::size_t it = 0; it < child.limit(); it++) {
+      for (std::size_t jt = 0; jt < it; jt++) {
+        Screen::print("*");
+      }
+      Screen::printLine();
     }
-    Screen::printLine();
-  }
-  for (std::size_t it = child.limit(); it > 0; it--) {
-    for (std::size_t jt = 0; jt < it; jt++) {
-      Screen::print("*");
+    for (std::size_t it = child.limit(); it > 0; it--) {
+      for (std::size_t jt = 0; jt < it; jt++) {
+        Screen::print("*");
+      }
+      Screen::printLine();
     }
-    Screen::printLine();
   }
-}
+};
+
+Init staticInit;
+
+void init() {}
 
 }  // namespace
 

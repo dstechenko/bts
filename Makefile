@@ -36,15 +36,15 @@ CRTEND_OBJ   := $(shell $(CXX) $(CXXFLAGS) -print-file-name=crtend.o)
 CRTN_OBJ     := $(BUILD_DIR)/libc/crtn.o
 
 $(OS_TARGET): $(BOOT_TARGET) $(KERNEL_TARGET)
-				cat $^ > $@
+	cat $^ > $@
 
 $(BOOT_TARGET): $(BUILD_DIR)/boot/boot.o
-			mkdir -p $(@D)
-			$(LD) $(LDFLAGS) -T $(SRC_DIR)/boot/link.ld $< -o $@
+	mkdir -p $(@D)
+	$(LD) $(LDFLAGS) -T $(SRC_DIR)/boot/link.ld $< -o $@
 
-$(KERNEL_TARGET): $(BUILD_DIR)/boot/kernel_entry.o $(OBJS)
-			mkdir -p $(@D)
-			$(LD) $(LDFLAGS) -T $(SRC_DIR)/kernel/link.ld $^ $(LDLIBS) -o $@
+$(KERNEL_TARGET): $(BUILD_DIR)/boot/kernel_entry.o $(CRTI_OBJ) $(OBJS) $(CRTN_OBJ)
+	mkdir -p $(@D)
+	$(LD) $(LDFLAGS) -T $(SRC_DIR)/kernel/link.ld $(BUILD_DIR)/boot/kernel_entry.o $(CRTI_OBJ) $(CRTBEGIN_OBJ) $(OBJS) $(LDLIBS) $(CRTEND_OBJ) $(CRTN_OBJ) -o $@
 
 $(BUILD_DIR)/%.o: $(SRC_DIR)/%.s
 	mkdir -p $(@D)
